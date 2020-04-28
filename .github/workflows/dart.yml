@@ -1,0 +1,32 @@
+name: dart
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+    tags:
+      - "*.*"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: stable
+      - run: flutter format .
+      - name: "Check that there are no changes after formatting"
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo Working directory not clean after formatting. Please apply the
+            echo following changes:
+            git diff
+            false
+          fi
+      - run: flutter analyze
+      - run: flutter test --coverage
+      - uses: codecov/codecov-action@v1.0.6
+
+  build:
