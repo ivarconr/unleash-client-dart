@@ -27,17 +27,23 @@ class Unleash {
       appName: settings.appName,
       instanceId: settings.instanceId,
       interval: settings.metricsReportingInterval.inMilliseconds,
-      sdkVersion: 'unleash-client-dart:0.0.1',
       started: DateTime.now().toIso8601String(),
     );
 
-    // TODO: What to do with the response?
     final response = await http.post(
       '${settings.unleashApi.toString()}/client/register',
       headers: settings.toHeaders(),
       body: json.encode(register.toJson()),
     );
-    print(response.body);
+    if (response.statusCode != 200) {
+      throw Exception(
+        'Could not register this unleash instance.\n'
+        'Please make sure your configuration is correct.\n'
+        'Error:\n'
+        'HTTP status code: ${response.statusCode}\n'
+        'HTTP response message: ${response.body}',
+      );
+    }
   }
 
   Future<Features> _loadToggles() async {

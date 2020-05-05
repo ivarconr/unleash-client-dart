@@ -4,16 +4,16 @@ import 'package:unleash/register.dart';
 void main() {
   test('Register.toJson', () {
     final register = Register(
-        started: 'time',
-        sdkVersion: 'version',
-        interval: 20,
-        instanceId: 'instanceid',
-        appName: 'appname',
-        strategies: ['strategy1']);
+      started: 'time',
+      interval: 20,
+      instanceId: 'instanceid',
+      appName: 'appname',
+      strategies: ['strategy1'],
+    );
 
     expect(register.toJson(), <String, dynamic>{
       'started': 'time',
-      'sdkVersion': 'version',
+      'sdkVersion': 'unleash-client-dart:0.0.1',
       'interval': 20,
       'instanceId': 'instanceid',
       'appName': 'appname',

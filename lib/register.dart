@@ -3,7 +3,6 @@ class Register {
   Register({
     this.appName,
     this.instanceId,
-    this.sdkVersion,
     this.strategies,
     this.started,
     this.interval,
@@ -16,7 +15,7 @@ class Register {
   final String instanceId;
 
   /// Optional field that describes the sdk version (name:version)
-  final String sdkVersion;
+  final String sdkVersion = 'unleash-client-dart:0.0.1';
 
   ///  List of strategies implemented by this application
   final List<String> strategies;

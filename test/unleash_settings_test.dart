@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 import 'package:unleash/unleash_settings.dart';
 
-final Matcher throwsAssertionError = throwsA(isA<AssertionError>());
+import 'test_utils.dart';
 
 void main() {
   test('UnleashSettings.toHeader', () {
