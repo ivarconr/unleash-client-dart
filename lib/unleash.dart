@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:unleash/features.dart';
@@ -30,18 +32,25 @@ class Unleash {
       started: DateTime.now().toIso8601String(),
     );
 
-    final response = await http.post(
-      '${settings.unleashApi.toString()}/client/register',
-      headers: settings.toHeaders(),
-      body: json.encode(register.toJson()),
-    );
-    if (response.statusCode != 200) {
-      throw Exception(
-        'Could not register this unleash instance.\n'
-        'Please make sure your configuration is correct.\n'
-        'Error:\n'
-        'HTTP status code: ${response.statusCode}\n'
-        'HTTP response message: ${response.body}',
+    try {
+      final response = await http.post(
+        '${settings.unleashApi.toString()}/client/register',
+        headers: settings.toHeaders(),
+        body: json.encode(register.toJson()),
+      );
+      if (response != null && response.statusCode != 200) {
+        log(
+          'Unleash: Could not register this unleash instance.\n'
+          'Please make sure your configuration is correct.\n'
+          'Error:\n'
+          'HTTP status code: ${response.statusCode}\n'
+          'HTTP response message: ${response.body}',
+        );
+      }
+    } on SocketException catch (_) {
+      log(
+        'Unleash: Could not connect to server!\n'
+        'Please make sure you have a connection to the internet.',
       );
     }
   }
@@ -66,10 +75,18 @@ class Unleash {
   }
 
   bool _isEnabled(String feature, {bool defaultValue = false}) {
-    final f = features.features.firstWhere((toggle) => toggle.name == feature);
-    if (f == null) {
-      return defaultValue;
-    }
-    return f.enabled;
+    final defaultToggle = FeatureToggle(
+      name: feature,
+      strategies: null,
+      description: null,
+      enabled: defaultValue,
+      strategy: null,
+    );
+
+    final featureToggle = features.features.firstWhere(
+      (toggle) => toggle.name == feature,
+      orElse: () => defaultToggle,
+    );
+    return featureToggle.enabled;
   }
 }

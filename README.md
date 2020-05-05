@@ -16,7 +16,6 @@ dependencies:
 
 Then, run `flutter packages get` in your terminal.
 
-
 ### Create a new Unleash instance
 
 It is easy to get a new instance of Unleash. In your app you typically *just want one instance of Unleash*, and inject that where you need it. 
@@ -60,5 +59,7 @@ If you want it to default to `true` instead, you can pass `true` as the second a
 Unleash.isEnabled("AwesomeFeature", true);
 ```
 
-## Local backup
-TODO
+## Current state of development
+
+This SDK currently does not support any strategies, metrics reporting or anything else.
+It just gets the feature toggels yet.
