@@ -13,7 +13,7 @@ void main() {
 
     expect(register.toJson(), <String, dynamic>{
       'started': 'time',
-      'sdkVersion': 'unleash-client-dart:0.0.1',
+      'sdkVersion': 'unleash-client-dart:0.0.2',
       'interval': 20,
       'instanceId': 'instanceid',
       'appName': 'appname',
