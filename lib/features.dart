@@ -48,11 +48,11 @@ class FeatureToggle {
     );
   }
 
-  String name;
-  String description;
-  bool enabled;
-  List<Strategy> strategies;
-  String strategy;
+  final String name;
+  final String description;
+  final bool enabled;
+  final List<Strategy> strategies;
+  final String strategy;
 }
 
 class Strategy {
@@ -65,6 +65,6 @@ class Strategy {
     );
   }
 
-  String name;
-  Map parameters;
+  final String name;
+  final Map parameters;
 }

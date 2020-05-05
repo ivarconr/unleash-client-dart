@@ -37,7 +37,7 @@ class Unleash {
       headers: settings.toHeaders(),
       body: json.encode(register.toJson()),
     );
-    print(response);
+    print(response.body);
   }
 
   Future<Features> _loadToggles() async {
