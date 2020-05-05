@@ -19,32 +19,30 @@ class Unleash {
     _instance.settings = settings;
     await _instance._register();
     _instance.features = await _instance._loadToggles();
-  }
-
-  static bool isEnabled(String feature, {bool defaultValue = false}) {
-    return defaultValue;
+    print(_instance.features);
   }
 
   Future<void> _register() async {
     final register = Register(
       appName: settings.appName,
-      instanceId: settings.instanceTag,
+      instanceId: settings.instanceId,
       interval: settings.metricsReportingInterval.inMilliseconds,
       sdkVersion: 'unleash-client-dart:0.0.1',
       started: DateTime.now().toIso8601String(),
     );
 
     // TODO: What to do with the response?
-    final _ = await http.post(
-      '${settings.unleashApi.toString()}/api/client/register',
+    final response = await http.post(
+      '${settings.unleashApi.toString()}/client/register',
       headers: settings.toHeaders(),
       body: json.encode(register.toJson()),
     );
+    print(response);
   }
 
   Future<Features> _loadToggles() async {
     final reponse = await http.get(
-      '${settings.unleashApi.toString()}/api/client/features',
+      '${settings.unleashApi.toString()}/client/features',
       headers: settings.toHeaders(),
     );
     final stringResponse = utf8.decode(reponse.bodyBytes);
@@ -56,4 +54,16 @@ class Unleash {
 
   // ignore: unused_element
   Future<void> _reportMetrics() async {}
+
+  static bool isEnabled(String feature, {bool defaultValue = false}) {
+    return _instance._isEnabled(feature, defaultValue: defaultValue);
+  }
+
+  bool _isEnabled(String feature, {bool defaultValue = false}) {
+    final f = features.features.firstWhere((toggle) => toggle.name == feature);
+    if (f == null) {
+      return defaultValue;
+    }
+    return f.enabled;
+  }
 }

@@ -3,16 +3,22 @@ import 'package:meta/meta.dart';
 class UnleashSettings {
   UnleashSettings({
     @required this.appName,
-    @required this.instanceTag,
+    @required this.instanceId,
     @required this.unleashApi,
     this.pollingInterval = const Duration(seconds: 15),
     this.metricsReportingInterval = const Duration(milliseconds: 10000),
   })  : assert(appName != null),
-        assert(instanceTag != null),
+        assert(instanceId != null),
         assert(unleashApi != null);
 
+  /// Used by GitLab as to evaluate the environment.
+  /// See https://docs.gitlab.com/ee/user/project/operations/feature_flags.html#configuring-feature-flags
   final String appName;
-  final String instanceTag;
+
+  final String instanceId;
+
+  /// Should be for example Uri.parse('https://unleash.herokuapp.com/api')
+  /// or if used with GitLab Uri.parse('https://gitlab.com/api/v4/feature_flags/unleash/42')
   final Uri unleashApi;
 
   /// See https://unleash.github.io/docs/client_specification#fetching-feature-toggles-polling
@@ -23,7 +29,7 @@ class UnleashSettings {
   Map<String, String> toHeaders() {
     return {
       'UNLEASH-APPNAME': appName,
-      'UNLEASH-INSTANCEID': instanceTag,
+      'UNLEASH-INSTANCEID': instanceId,
     };
   }
 }

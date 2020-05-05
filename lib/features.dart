@@ -6,8 +6,8 @@ class Features {
     var features = <Feature>[];
     if (json['features'] != null) {
       features = <Feature>[];
-      json['features'].forEach((Map v) {
-        features.add(Feature.fromJson(v));
+      json['features'].forEach((dynamic v) {
+        features.add(Feature.fromJson(v as Map));
       });
     }
 
@@ -34,8 +34,8 @@ class Feature {
     var strategies = <Strategies>[];
     if (json['strategies'] != null) {
       strategies = <Strategies>[];
-      json['strategies'].forEach((Map v) {
-        strategies.add(Strategies.fromJson(v));
+      json['strategies'].forEach((dynamic v) {
+        strategies.add(Strategies.fromJson(v as Map));
       });
     }
 
