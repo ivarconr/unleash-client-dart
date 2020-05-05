@@ -1,7 +1,7 @@
 name: unleash
 description: A dart client for unleash
 version: 0.0.1
-author: Jonsa Uekoetter
+author: Jonas Uekoetter
 homepage: https://uekoetter.dev
 
 environment:
