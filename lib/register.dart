@@ -15,7 +15,7 @@ class Register {
   final String instanceId;
 
   /// Optional field that describes the sdk version (name:version)
-  final String sdkVersion = 'unleash-client-dart:0.0.2';
+  final String sdkVersion = 'unleash-client-dart:0.0.3';
 
   ///  List of strategies implemented by this application
   final List<String> strategies;
