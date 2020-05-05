@@ -3,11 +3,11 @@ class Features {
   Features({this.version, this.features});
 
   factory Features.fromJson(Map<String, dynamic> json) {
-    var features = <Feature>[];
+    var features = <FeatureToggle>[];
     if (json['features'] != null) {
-      features = <Feature>[];
+      features = <FeatureToggle>[];
       json['features'].forEach((dynamic v) {
-        features.add(Feature.fromJson(v as Map));
+        features.add(FeatureToggle.fromJson(v as Map));
       });
     }
 
@@ -18,11 +18,11 @@ class Features {
   }
 
   final int version;
-  final List<Feature> features;
+  final List<FeatureToggle> features;
 }
 
-class Feature {
-  Feature({
+class FeatureToggle {
+  FeatureToggle({
     this.name,
     this.description,
     this.enabled,
@@ -30,16 +30,16 @@ class Feature {
     this.strategy,
   });
 
-  factory Feature.fromJson(Map json) {
-    var strategies = <Strategies>[];
+  factory FeatureToggle.fromJson(Map json) {
+    var strategies = <Strategy>[];
     if (json['strategies'] != null) {
-      strategies = <Strategies>[];
+      strategies = <Strategy>[];
       json['strategies'].forEach((dynamic v) {
-        strategies.add(Strategies.fromJson(v as Map));
+        strategies.add(Strategy.fromJson(v as Map));
       });
     }
 
-    return Feature(
+    return FeatureToggle(
       name: json['name'] as String,
       description: json['description'] as String,
       enabled: json['enabled'] as bool,
@@ -51,15 +51,15 @@ class Feature {
   String name;
   String description;
   bool enabled;
-  List<Strategies> strategies;
+  List<Strategy> strategies;
   String strategy;
 }
 
-class Strategies {
-  Strategies({this.name, this.parameters});
+class Strategy {
+  Strategy({this.name, this.parameters});
 
-  factory Strategies.fromJson(Map json) {
-    return Strategies(
+  factory Strategy.fromJson(Map json) {
+    return Strategy(
       name: json['name'] as String,
       parameters: json['parameters'] != null ? json['parameters'] as Map : null,
     );

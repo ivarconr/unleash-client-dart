@@ -8,13 +8,11 @@ Probably also with the [GitLab Feature Flags](https://docs.gitlab.com/ee/user/pr
 
 
 ## Getting started
-First, you will need to add `feedback` to your `pubspec.yaml`:
+First, you will need to add `unleash` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter:
-    sdk: flutter
-  feedback: 0.2.1 # use the latest version found on pub.dev
+  unleash: 0.0.1 # use the latest version found on pub.dev
 ```
 
 Then, run `flutter packages get` in your terminal.
@@ -26,8 +24,20 @@ It is easy to get a new instance of Unleash. In your app you typically *just wan
 
 To create a new instance of Unleash you need to pass in a config object:
 ```dart
+import 'package:unleash/unleashdart.dart';
 
-// TODO code example
+Future<void> main() async {
+  await Unleash.init(
+    UnleashSettings(
+      appName: '<your_app_name_here>',
+      instanceId: '<your_instanceId_here>',
+      unleashApi:
+          Uri.parse('https://example.org/api'),
+    ),
+  );
+  print(Unleash.isEnabled('AwesomeFeature'));
+}
+
 ```
 
 ### Awesome feature toggle API
@@ -42,7 +52,7 @@ if(Unleash.isEnabled("AwesomeFeature")) {
 }
 ```
 
-Calling `unleash.isEnabled("AwesomeFeature")` is the equvivalent of calling `unleash.isEnabled("AwesomeFeature", false)`. 
+Calling `Unleash.isEnabled("AwesomeFeature")` is the equvivalent of calling `Unleash.isEnabled("AwesomeFeature", false)`. 
 Which means that it will return `false` if it cannot find the named toggle. 
 
 If you want it to default to `true` instead, you can pass `true` as the second argument:
@@ -52,3 +62,4 @@ Unleash.isEnabled("AwesomeFeature", true)
 ```
 
 ## Local backup
+TODO
