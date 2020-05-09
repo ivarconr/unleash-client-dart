@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:unleash/features.dart';
+import 'package:unleash/src/features.dart';
 
 void main() {
   test('Features.fromJson', () {

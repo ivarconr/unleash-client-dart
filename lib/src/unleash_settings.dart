@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:path/path.dart';
 
 class UnleashSettings {
   UnleashSettings({
@@ -32,4 +33,10 @@ class UnleashSettings {
       'UNLEASH-INSTANCEID': instanceId,
     };
   }
+
+  /// URL to register this client
+  String get registerUrl => join(unleashApi.toString(), 'client/register');
+
+  /// URL to send GET requests to load toggles
+  String get featureUrl => join(unleashApi.toString(), 'client/features');
 }

@@ -1,3 +1,5 @@
+import 'package:unleash/src/version.dart' as version;
+
 /// See https://unleash.github.io/docs/api/client/register
 class Register {
   Register({
@@ -15,7 +17,7 @@ class Register {
   final String instanceId;
 
   /// Optional field that describes the sdk version (name:version)
-  final String sdkVersion = 'unleash-client-dart:0.0.3';
+  final String sdkVersion = version.sdkVersion;
 
   ///  List of strategies implemented by this application
   final List<String> strategies;

@@ -1,4 +1,4 @@
-import 'package:unleash/unleashdart.dart';
+import 'package:unleash/unleash.dart';
 
 Future<void> main() async {
   await Unleash.init(

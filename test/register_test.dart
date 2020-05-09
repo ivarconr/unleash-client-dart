@@ -1,5 +1,6 @@
 import 'package:test/test.dart';
-import 'package:unleash/register.dart';
+import 'package:unleash/src/register.dart';
+import 'package:unleash/src/version.dart';
 
 void main() {
   test('Register.toJson', () {
@@ -13,7 +14,7 @@ void main() {
 
     expect(register.toJson(), <String, dynamic>{
       'started': 'time',
-      'sdkVersion': 'unleash-client-dart:0.0.3',
+      'sdkVersion': sdkVersion,
       'interval': 20,
       'instanceId': 'instanceid',
       'appName': 'appname',
