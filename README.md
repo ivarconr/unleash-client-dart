@@ -26,17 +26,15 @@ To create a new instance of Unleash you need to pass in a config object:
 import 'package:unleash/unleash.dart';
 
 Future<void> main() async {
-  await Unleash.init(
+  final unleash = await Unleash.init(
     UnleashSettings(
-      appName: '<your_app_name_here>',
-      instanceId: '<your_instanceId_here>',
-      unleashApi:
-          Uri.parse('https://example.org/api'),
+      appName: '<appname>',
+      instanceId: '<instanceid>',
+      unleashApi: Uri.parse('<api_url>'),
     ),
   );
-  print(Unleash.isEnabled('AwesomeFeature'));
+  print(unleash.isEnabled('Awesome Feature'));
 }
-
 ```
 
 ### Awesome feature toggle API
@@ -44,7 +42,7 @@ Future<void> main() async {
 It is really simple to use unleash.
 
 ```dart
-if(Unleash.isEnabled("AwesomeFeature")) {
+if(unleash.isEnabled("AwesomeFeature")) {
   //do some magic
 } else {
   //do old boring stuff
@@ -57,7 +55,7 @@ Which means that it will return `false` if it cannot find the named toggle.
 If you want it to default to `true` instead, you can pass `true` as the second argument:
 
 ```dart
-Unleash.isEnabled("AwesomeFeature", defaultValue: true);
+unleash.isEnabled("AwesomeFeature", defaultValue: true);
 ```
 
 ## Current state of development

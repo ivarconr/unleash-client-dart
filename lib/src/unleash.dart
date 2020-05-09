@@ -8,19 +8,18 @@ import 'package:unleash/src/register.dart';
 import 'package:unleash/src/unleash_settings.dart';
 
 class Unleash {
-  Unleash._internal();
+  Unleash._internal(this.settings);
 
-  static final Unleash _instance = Unleash._internal();
-
-  UnleashSettings settings;
+  final UnleashSettings settings;
 
   Features features;
 
-  static Future<void> init(UnleashSettings settings) async {
+  static Future<Unleash> init(UnleashSettings settings) async {
     assert(settings != null);
-    _instance.settings = settings;
-    await _instance._register();
-    _instance.features = await _instance._loadToggles();
+    final unleash = Unleash._internal(settings);
+    await unleash._register();
+    await unleash._loadToggles();
+    return unleash;
   }
 
   Future<void> _register() async {
@@ -54,26 +53,20 @@ class Unleash {
     }
   }
 
-  Future<Features> _loadToggles() async {
+  Future<void> _loadToggles() async {
     final reponse = await http.get(
       settings.featureUrl,
       headers: settings.toHeaders(),
     );
     final stringResponse = utf8.decode(reponse.bodyBytes);
-    final features =
+    features =
         Features.fromJson(json.decode(stringResponse) as Map<String, dynamic>);
-
-    return features;
   }
 
   // ignore: unused_element
   Future<void> _reportMetrics() async {}
 
-  static bool isEnabled(String feature, {bool defaultValue = false}) {
-    return _instance._isEnabled(feature, defaultValue: defaultValue);
-  }
-
-  bool _isEnabled(String feature, {bool defaultValue = false}) {
+  bool isEnabled(String feature, {bool defaultValue = false}) {
     final defaultToggle = FeatureToggle(
       name: feature,
       strategies: null,
