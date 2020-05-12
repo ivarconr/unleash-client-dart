@@ -14,9 +14,20 @@ class Unleash {
 
   Features features;
 
-  static Future<Unleash> init(UnleashSettings settings) async {
+  http.Client _client;
+
+  /// Initializes an [Unleash] instance, registers it at the backend and
+  /// starts to load the feature toggles.
+  /// [settings] are used to specify the backend and various other settings.
+  /// A [client] can be used for example to further configure http headers
+  /// according to your needs.
+  static Future<Unleash> init(
+    UnleashSettings settings, {
+    http.Client client,
+  }) async {
     assert(settings != null);
-    final unleash = Unleash._internal(settings);
+    final unleash = Unleash._internal(settings)
+      .._client = client ?? http.Client();
     await unleash._register();
     await unleash._loadToggles();
     return unleash;
@@ -31,7 +42,7 @@ class Unleash {
     );
 
     try {
-      final response = await http.post(
+      final response = await _client.post(
         settings.registerUrl,
         headers: settings.toHeaders(),
         body: json.encode(register.toJson()),
@@ -54,7 +65,7 @@ class Unleash {
   }
 
   Future<void> _loadToggles() async {
-    final reponse = await http.get(
+    final reponse = await _client.get(
       settings.featureUrl,
       headers: settings.toHeaders(),
     );
@@ -62,9 +73,6 @@ class Unleash {
     features =
         Features.fromJson(json.decode(stringResponse) as Map<String, dynamic>);
   }
-
-  // ignore: unused_element
-  Future<void> _reportMetrics() async {}
 
   bool isEnabled(String feature, {bool defaultValue = false}) {
     final defaultToggle = FeatureToggle(
