@@ -18,7 +18,10 @@ void main() {
       final featuresUri = Uri.parse('http://example.org/api/client/features');
 
       if (request.url == registerUri) {
+        // HTTP method
         expect(request.method, 'POST');
+
+        // body
         final body = json.decode(request.body) as Map;
         expect(body.length, 6);
         expect(body['appName'], 'test_app_name');
@@ -27,11 +30,22 @@ void main() {
         expect(body['strategies'], null);
         expect(body.containsKey('started'), true);
         expect(body['interval'], 10000);
+
         return Future.value(Response('', 200));
       }
 
       if (request.url == featuresUri) {
         expect(request.method, 'GET');
+
+        // headers as per https://unleash.github.io/docs/api/client/features
+        expect(
+          request.headers,
+          <String, String>{
+            'UNLEASH-APPNAME': 'test_app_name',
+            'UNLEASH-INSTANCEID': 'instance_id',
+          },
+        );
+
         return Future.value(Response(testFeatures, 200));
       }
       return null;
