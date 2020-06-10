@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -5,16 +6,24 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:unleash/src/features.dart';
 import 'package:unleash/src/register.dart';
+import 'package:unleash/src/toggle_backup.dart';
 import 'package:unleash/src/unleash_settings.dart';
 
+typedef UpdateCallback = void Function();
+
 class Unleash {
-  Unleash._internal(this.settings);
+  Unleash._internal(this.settings, this._onUpdate);
 
   final UnleashSettings settings;
+  final UpdateCallback _onUpdate;
 
-  Features features;
+  Features _features;
 
   http.Client _client;
+
+  Timer _timer;
+
+  ToggleBackupRepository _backupRepository;
 
   /// Initializes an [Unleash] instance, registers it at the backend and
   /// starts to load the feature toggles.
@@ -24,13 +33,43 @@ class Unleash {
   static Future<Unleash> init(
     UnleashSettings settings, {
     http.Client client,
+    ReadBackup readBackup,
+    WriteBackup writeBackup,
+    UpdateCallback onUpdate,
   }) async {
     assert(settings != null);
-    final unleash = Unleash._internal(settings)
+    final unleash = Unleash._internal(settings, onUpdate)
       .._client = client ?? http.Client();
+    if (writeBackup != null && readBackup != null) {
+      unleash._backupRepository =
+          ToggleBackupRepository(readBackup, writeBackup);
+    }
+
     await unleash._register();
     await unleash._loadToggles();
+    unleash._setPeriodicToggleReload();
     return unleash;
+  }
+
+  bool isEnabled(String feature, {bool defaultValue = false}) {
+    final defaultToggle = FeatureToggle(
+      name: feature,
+      strategies: null,
+      description: null,
+      enabled: defaultValue,
+      strategy: null,
+    );
+
+    final featureToggle = _features.features.firstWhere(
+      (toggle) => toggle.name == feature,
+      orElse: () => defaultToggle,
+    );
+    return featureToggle.enabled;
+  }
+
+  /// Cancels all periodic actions of this Unleash instance
+  void dispose() {
+    _timer.cancel();
   }
 
   Future<void> _register() async {
@@ -65,28 +104,25 @@ class Unleash {
   }
 
   Future<void> _loadToggles() async {
-    final reponse = await _client.get(
-      settings.featureUrl,
-      headers: settings.toHeaders(),
-    );
-    final stringResponse = utf8.decode(reponse.bodyBytes);
-    features =
-        Features.fromJson(json.decode(stringResponse) as Map<String, dynamic>);
+    try {
+      final reponse = await _client.get(
+        settings.featureUrl,
+        headers: settings.toHeaders(),
+      );
+      final stringResponse = utf8.decode(reponse.bodyBytes);
+      await _backupRepository?.write(settings, stringResponse);
+      _features = Features.fromJson(
+          json.decode(stringResponse) as Map<String, dynamic>);
+      _onUpdate?.call();
+    } catch (_) {
+      // TODO: Should there be some other form of error handling?
+      _features = await _backupRepository?.load(settings);
+    }
   }
 
-  bool isEnabled(String feature, {bool defaultValue = false}) {
-    final defaultToggle = FeatureToggle(
-      name: feature,
-      strategies: null,
-      description: null,
-      enabled: defaultValue,
-      strategy: null,
-    );
-
-    final featureToggle = features.features.firstWhere(
-      (toggle) => toggle.name == feature,
-      orElse: () => defaultToggle,
-    );
-    return featureToggle.enabled;
+  void _setPeriodicToggleReload() {
+    _timer = Timer.periodic(settings.pollingInterval, (timer) {
+      _loadToggles();
+    });
   }
 }

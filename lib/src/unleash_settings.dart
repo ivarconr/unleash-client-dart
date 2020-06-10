@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 import 'package:path/path.dart';
 
 class UnleashSettings {
-  UnleashSettings({
+  const UnleashSettings({
     @required this.appName,
     @required this.instanceId,
     @required this.unleashApi,
@@ -12,7 +12,7 @@ class UnleashSettings {
         assert(instanceId != null),
         assert(unleashApi != null);
 
-  /// Used by GitLab as to evaluate the environment.
+  /// Used by GitLab to evaluate the environment.
   /// See https://docs.gitlab.com/ee/user/project/operations/feature_flags.html#configuring-feature-flags
   final String appName;
 
