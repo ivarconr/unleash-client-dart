@@ -57,7 +57,7 @@ Future<Response> happyMock(Request request) {
     expect(body['appName'], 'test_app_name');
     expect(body['instanceId'], 'instance_id');
     expect(body.containsKey('sdkVersion'), true);
-    expect(body['strategies'], null);
+    expect(body['strategies'], <dynamic>[]);
     expect(body.containsKey('started'), true);
     expect(body['interval'], 10000);
 

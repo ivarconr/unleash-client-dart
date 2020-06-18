@@ -5,7 +5,7 @@ class Register {
   Register({
     this.appName,
     this.instanceId,
-    this.strategies,
+    this.strategies = const [],
     this.started,
     this.interval,
   });

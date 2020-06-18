@@ -83,10 +83,13 @@ class Unleash {
     try {
       final response = await _client.post(
         settings.registerUrl,
-        headers: settings.toHeaders(),
+        headers: {
+          'Content-type': 'application/json',
+          ...settings.toHeaders(),
+        },
         body: json.encode(register.toJson()),
       );
-      if (response != null && response.statusCode != 200) {
+      if (response != null && response.statusCode >= 300) {
         log(
           'Unleash: Could not register this unleash instance.\n'
           'Please make sure your configuration is correct.\n'
