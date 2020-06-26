@@ -26,5 +26,5 @@ jobs:
             false
           fi
       - run: flutter analyze
-      - run: flutter pub run test_coverage
-      - uses: codecov/codecov-action@v1.0.6
+      - run: flutter pub run test -p vm
+#      - uses: codecov/codecov-action@v1.0.6

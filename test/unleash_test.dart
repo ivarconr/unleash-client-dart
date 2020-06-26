@@ -15,9 +15,11 @@ void main() {
   test('Unleash.init happy path', () async {
     final unleash = await Unleash.init(
       UnleashSettings(
-          appName: 'test_app_name',
-          instanceId: 'instance_id',
-          unleashApi: Uri.parse('http://example.org/api')),
+        appName: 'test_app_name',
+        instanceId: 'instance_id',
+        unleashApi: Uri.parse('http://example.org/api'),
+        pollingInterval: null,
+      ),
       client: MockClient(happyMock),
     );
 

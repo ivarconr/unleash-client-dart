@@ -1,6 +1,6 @@
 [![Pub](https://img.shields.io/pub/v/unleash.svg)](https://pub.dartlang.org/packages/unleash)
 ![GitHub Workflow Status](https://github.com/ueman/unleash/workflows/dart/badge.svg?branch=master)
-[![Code Coverage](https://codecov.io/gh/ueman/unleash/branch/master/graph/badge.svg)](https://codecov.io/gh/ueman/unleash)
+<!-- [![Code Coverage](https://codecov.io/gh/ueman/unleash/branch/master/graph/badge.svg)](https://codecov.io/gh/ueman/unleash) -->
 
 # Unleash Client SDK for Dart and Flutter
 This is an unofficial Unleash Client SDK for Dart. It is compatible with the [Unleash-hosted.com SaaS](https://www.unleash-hosted.com/) offering and [Unleash Open-Source](https://github.com/unleash/unleash).

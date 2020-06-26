@@ -23,6 +23,7 @@ class UnleashSettings {
   final Uri unleashApi;
 
   /// See https://unleash.github.io/docs/client_specification#fetching-feature-toggles-polling
+  /// Polling is disabled if this is null.
   final Duration pollingInterval;
 
   final Duration metricsReportingInterval;

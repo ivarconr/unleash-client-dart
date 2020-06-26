@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:unleash/src/features.dart';
@@ -47,7 +46,7 @@ class Unleash {
 
     await unleash._register();
     await unleash._loadToggles();
-    unleash._setPeriodicToggleReload();
+    unleash._setTogglePollingTimer();
     return unleash;
   }
 
@@ -79,26 +78,18 @@ class Unleash {
       interval: settings.metricsReportingInterval.inMilliseconds,
       started: DateTime.now().toIso8601String(),
     );
-
-    try {
-      final response = await _client.post(
-        settings.registerUrl,
-        headers: settings.toHeaders(),
-        body: json.encode(register.toJson()),
-      );
-      if (response != null && response.statusCode != 200) {
-        log(
-          'Unleash: Could not register this unleash instance.\n'
-          'Please make sure your configuration is correct.\n'
-          'Error:\n'
-          'HTTP status code: ${response.statusCode}\n'
-          'HTTP response message: ${response.body}',
-        );
-      }
-    } on SocketException catch (_) {
+    final response = await _client.post(
+      settings.registerUrl,
+      headers: settings.toHeaders(),
+      body: json.encode(register.toJson()),
+    );
+    if (response != null && response.statusCode != 200) {
       log(
-        'Unleash: Could not connect to server!\n'
-        'Please make sure you have a connection to the internet.',
+        'Unleash: Could not register this unleash instance.\n'
+        'Please make sure your configuration is correct.\n'
+        'Error:\n'
+        'HTTP status code: ${response.statusCode}\n'
+        'HTTP response message: ${response.body}',
       );
     }
   }
@@ -120,7 +111,11 @@ class Unleash {
     }
   }
 
-  void _setPeriodicToggleReload() {
+  void _setTogglePollingTimer() {
+    // disable polling if no pollingInterval is given
+    if (settings.pollingInterval == null) {
+      return;
+    }
     _timer = Timer.periodic(settings.pollingInterval, (timer) {
       _loadToggles();
     });
