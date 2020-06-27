@@ -11,5 +11,5 @@ void main() {
           yaml.loadYaml(File('pubspec.yaml').readAsStringSync());
       expect(version, pubspec['version']);
     });
-  }, skip: true);
+  });
 }

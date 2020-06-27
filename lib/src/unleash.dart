@@ -16,11 +16,15 @@ class Unleash {
   final UnleashSettings settings;
   final UpdateCallback _onUpdate;
 
+  /// Collection of all available feature toggles
   Features _features;
 
+  /// The client which is used by unleash to make the requests
   http.Client _client;
 
-  Timer _timer;
+  /// This timer is responsible for starting a new request
+  /// every time the given [UnleashSettings.pollingInterval] expired.
+  Timer _togglePollingTimer;
 
   ToggleBackupRepository _backupRepository;
 
@@ -68,7 +72,7 @@ class Unleash {
 
   /// Cancels all periodic actions of this Unleash instance
   void dispose() {
-    _timer.cancel();
+    _togglePollingTimer.cancel();
   }
 
   Future<void> _register() async {
@@ -120,7 +124,7 @@ class Unleash {
     if (settings.pollingInterval == null) {
       return;
     }
-    _timer = Timer.periodic(settings.pollingInterval, (timer) {
+    _togglePollingTimer = Timer.periodic(settings.pollingInterval, (timer) {
       _loadToggles();
     });
   }

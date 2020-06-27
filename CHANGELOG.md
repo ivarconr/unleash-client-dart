@@ -1,6 +1,11 @@
+## [0.0.5]
+
+* added periodic toggle polling
+* added ability to persist feature toggle backups
+
 ## [0.0.4]
 
-* small API changes
+* API changes
 
 ## [0.0.3]
 

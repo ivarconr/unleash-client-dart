@@ -12,10 +12,13 @@ class UnleashSettings {
         assert(instanceId != null),
         assert(unleashApi != null);
 
-  /// Used by GitLab to evaluate the environment.
+  /// Name of the application seen by unleash-server.
+  ///
+  /// Also used by GitLab to evaluate the environment.
   /// See https://docs.gitlab.com/ee/user/project/operations/feature_flags.html#configuring-feature-flags
   final String appName;
 
+  /// Instance id for this application (typically hostname, podId or similar)
   final String instanceId;
 
   /// Should be for example Uri.parse('https://unleash.herokuapp.com/api')
@@ -26,6 +29,9 @@ class UnleashSettings {
   /// Polling is disabled if this is null.
   final Duration pollingInterval;
 
+  /// Currently unused.
+  /// At which interval, in milliseconds,
+  /// will this client be expected to send metrics
   final Duration metricsReportingInterval;
 
   Map<String, String> toHeaders() {
