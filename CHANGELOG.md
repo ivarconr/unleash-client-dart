@@ -1,4 +1,4 @@
-## [0.1.0]
+## [0.1.1]
 
 * the API is now more or less stable. I don't expect it to change much anymore.
 * fixed a few small errors in the README
