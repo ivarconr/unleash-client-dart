@@ -1,3 +1,9 @@
+## [0.1.0]
+
+* the API is now more or less stable. I don't expect it to change much anymore.
+* fixed a few small errors in the README
+* there are no new code changes in this release 
+
 ## [0.0.5]
 
 * added periodic toggle polling
