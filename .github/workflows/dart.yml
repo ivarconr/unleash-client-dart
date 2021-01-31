@@ -1,30 +1,23 @@
-name: dart
+name: unleash
 
-on:
-  pull_request:
-  push:
-    branches:
-      - master
-    tags:
-      - "*.*"
+on: [push, pull_request]
 
 jobs:
-  check:
+  build:
     runs-on: ubuntu-latest
+    container:
+      image: google/dart:2.12-beta
     steps:
       - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v1
+      - name: Install Dependencies
+        run: pub get
+      - name: Format
+        run: dartfmt --dry-run --set-exit-if-changed .
+      - name: Analyze
+        run: dart analyze --fatal-infos --fatal-warnings .
+      - name: Run tests
+        run: dart test --coverage=coverage && pub run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
         with:
-          channel: stable
-      - run: flutter format .
-      - name: "Check that there are no changes after formatting"
-        run: |
-          if [ -n "$(git status --porcelain)" ]; then
-            echo Working directory not clean after formatting. Please apply the
-            echo following changes:
-            git diff
-            false
-          fi
-      - run: flutter analyze
-      - run: flutter pub run test -p vm
-#      - uses: codecov/codecov-action@v1.0.6
+          token: ${{ secrets.CODECOV_TOKEN }}
