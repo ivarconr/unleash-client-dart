@@ -6,27 +6,6 @@ import 'test_utils.dart';
 
 void main() {
   group('ToggleBackupRepositoryBackup ', () {
-    test('test assertions', () async {
-      Future<void> write(UnleashSettings settings, String json) {
-        return Future.value();
-      }
-
-      Future<String> read(UnleashSettings settings) {
-        return Future.value(testFeatureToggleJson);
-      }
-
-      expect(() {
-        ToggleBackupRepository(null, write);
-      }, throwsAssertionError);
-      expect(() {
-        ToggleBackupRepository(read, null);
-      }, throwsAssertionError);
-
-      expect(() {
-        ToggleBackupRepository(null, null);
-      }, throwsAssertionError);
-    });
-
     test('happy path', () async {
       Future<void> write(UnleashSettings settings, String json) {
         expect(settings, testSettings);
@@ -45,8 +24,8 @@ void main() {
       final backup = await backupRepository.load(testSettings);
 
       expect(backup != null, true);
-      expect(backup.features.length, 3);
-      expect(backup.features[0].name, 'Demo');
+      expect(backup!.features!.length, 3);
+      expect(backup.features![0].name, 'Demo');
     });
 
     test('unsuccessful saving', () async {

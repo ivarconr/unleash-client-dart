@@ -8,10 +8,6 @@ import 'package:unleash/unleash.dart';
 import 'test_utils.dart';
 
 void main() {
-  test('Unleash.init throws assertion error', () {
-    expect(Unleash.init(null), throwsAssertionError);
-  });
-
   test('Unleash.init happy path', () async {
     final unleash = await Unleash.init(
       UnleashSettings(
@@ -45,7 +41,7 @@ void main() {
 
 /// This mock handler only sends valid responses.
 /// Used to test the happy path.
-Future<Response> happyMock(Request request) {
+Future<Response> happyMock(Request request) async {
   final registerUri = Uri.parse('http://example.org/api/client/register');
   final featuresUri = Uri.parse('http://example.org/api/client/features');
 
@@ -80,5 +76,5 @@ Future<Response> happyMock(Request request) {
 
     return Future.value(Response(testFeatureToggleJson, 200));
   }
-  return null;
+  fail('This should not be reached');
 }

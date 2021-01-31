@@ -17,17 +17,12 @@ typedef WriteBackup = Future<void> Function(
 /// Used to save and load feature toggle backups. Provides exception
 /// handling around [ReadBackup] and [WriteBackup].
 class ToggleBackupRepository {
-  ToggleBackupRepository(this.read, this.write)
-      : assert(read != null),
-        assert(write != null);
+  ToggleBackupRepository(this.read, this.write);
 
   final ReadBackup read;
   final WriteBackup write;
 
   Future<void> save(UnleashSettings settings, String toggles) async {
-    if (toggles == null) {
-      return;
-    }
     if (toggles.isEmpty) {
       return;
     }
@@ -38,7 +33,7 @@ class ToggleBackupRepository {
     }
   }
 
-  Future<Features> load(UnleashSettings settings) async {
+  Future<Features?> load(UnleashSettings settings) async {
     try {
       final jsonString = await read(settings);
       return Features.fromJson(json.decode(jsonString) as Map<String, dynamic>);

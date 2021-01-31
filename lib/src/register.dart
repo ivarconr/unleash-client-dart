@@ -3,10 +3,10 @@ import 'package:unleash/src/version.dart' as version;
 /// See https://unleash.github.io/docs/api/client/register
 class Register {
   Register({
-    this.appName,
-    this.instanceId,
+    required this.appName,
+    required this.instanceId,
     this.strategies = const [],
-    this.started,
+    required this.started,
     this.interval,
   });
 
@@ -22,22 +22,23 @@ class Register {
   ///  List of strategies implemented by this application
   final List<String> strategies;
 
-  /// When this client started. Should be reported as [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) time.
-  final String started;
+  /// When this client started. Should be reported as
+  /// [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) time.
+  final DateTime started;
 
   /// At which interval, in milliseconds,
   /// will this client be expected to send metrics
-  final int interval;
+  final int? interval;
 
   /// Converts this instance to a JSON object
   Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['appName'] = appName;
-    data['instanceId'] = instanceId;
-    data['sdkVersion'] = sdkVersion;
-    data['strategies'] = strategies;
-    data['started'] = started;
-    data['interval'] = interval;
-    return data;
+    return <String, dynamic>{
+      'appName': appName,
+      'instanceId': instanceId,
+      'sdkVersion': sdkVersion,
+      'strategies': strategies,
+      'started': started.toIso8601String(),
+      if (interval != null) 'interval': interval,
+    };
   }
 }

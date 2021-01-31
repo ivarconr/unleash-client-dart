@@ -4,8 +4,10 @@ import 'package:unleash/src/version.dart';
 
 void main() {
   test('Register.toJson', () {
+    final startTime = DateTime(2020, 6, 28);
+
     final register = Register(
-      started: 'time',
+      started: startTime,
       interval: 20,
       instanceId: 'instanceid',
       appName: 'appname',
@@ -13,7 +15,7 @@ void main() {
     );
 
     expect(register.toJson(), <String, dynamic>{
-      'started': 'time',
+      'started': startTime.toIso8601String(),
       'sdkVersion': sdkVersion,
       'interval': 20,
       'instanceId': 'instanceid',

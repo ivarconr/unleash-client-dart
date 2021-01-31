@@ -24,21 +24,21 @@ void main() {
 
       // Features
       expect(features.version, 1);
-      expect(features.features.length, 1);
+      expect(features.features!.length, 1);
 
       // FeatureToggle
-      final feature = features.features[0];
+      final feature = features.features![0];
       expect(feature.name, 'example-feature');
       expect(feature.description, 'example description');
       expect(feature.enabled, false);
       expect(feature.strategy, 'example-strategy');
-      expect(feature.strategies.length, 1);
+      expect(feature.strategies!.length, 1);
 
       // Strategy
-      final strategy = feature.strategies[0];
+      final strategy = feature.strategies![0];
       expect(strategy.name, 'example-strategy');
-      expect(strategy.parameters.length, 1);
-      expect(strategy.parameters['example'], 'example');
+      expect(strategy.parameters!.length, 1);
+      expect(strategy.parameters!['example'], 'example');
     });
   });
 }

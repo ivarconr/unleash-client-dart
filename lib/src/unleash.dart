@@ -11,22 +11,22 @@ import 'package:unleash/src/unleash_settings.dart';
 typedef UpdateCallback = void Function();
 
 class Unleash {
-  Unleash._internal(this.settings, this._onUpdate);
+  Unleash._internal(this.settings, this._onUpdate, this._client);
 
   final UnleashSettings settings;
-  final UpdateCallback _onUpdate;
+  final UpdateCallback? _onUpdate;
 
   /// Collection of all available feature toggles
-  Features _features;
+  Features? _features;
 
   /// The client which is used by unleash to make the requests
-  http.Client _client;
+  final http.Client _client;
 
   /// This timer is responsible for starting a new request
   /// every time the given [UnleashSettings.pollingInterval] expired.
-  Timer _togglePollingTimer;
+  Timer? _togglePollingTimer;
 
-  ToggleBackupRepository _backupRepository;
+  ToggleBackupRepository? _backupRepository;
 
   /// Initializes an [Unleash] instance, registers it at the backend and
   /// starts to load the feature toggles.
@@ -35,14 +35,16 @@ class Unleash {
   /// according to your needs.
   static Future<Unleash> init(
     UnleashSettings settings, {
-    http.Client client,
-    ReadBackup readBackup,
-    WriteBackup writeBackup,
-    UpdateCallback onUpdate,
+    http.Client? client,
+    ReadBackup? readBackup,
+    WriteBackup? writeBackup,
+    UpdateCallback? onUpdate,
   }) async {
-    assert(settings != null);
-    final unleash = Unleash._internal(settings, onUpdate)
-      .._client = client ?? http.Client();
+    final unleash = Unleash._internal(
+      settings,
+      onUpdate,
+      client ?? http.Client(),
+    );
     if (writeBackup != null && readBackup != null) {
       unleash._backupRepository =
           ToggleBackupRepository(readBackup, writeBackup);
@@ -54,50 +56,62 @@ class Unleash {
     return unleash;
   }
 
-  bool isEnabled(String feature, {bool defaultValue = false}) {
+  bool isEnabled(String toggleName, {bool defaultValue = false}) {
     final defaultToggle = FeatureToggle(
-      name: feature,
+      name: toggleName,
       strategies: null,
       description: null,
       enabled: defaultValue,
       strategy: null,
     );
 
-    final featureToggle = _features.features.firstWhere(
-      (toggle) => toggle.name == feature,
+    final featureToggle = _features?.features?.firstWhere(
+      (toggle) => toggle.name == toggleName,
       orElse: () => defaultToggle,
     );
-    return featureToggle.enabled;
+
+    return featureToggle?.enabled ?? defaultValue;
   }
 
   /// Cancels all periodic actions of this Unleash instance
   void dispose() {
-    _togglePollingTimer.cancel();
+    _togglePollingTimer?.cancel();
   }
 
   Future<void> _register() async {
     final register = Register(
       appName: settings.appName,
       instanceId: settings.instanceId,
-      interval: settings.metricsReportingInterval.inMilliseconds,
-      started: DateTime.now().toIso8601String(),
+      interval: settings.metricsReportingInterval?.inMilliseconds,
+      started: DateTime.now(),
     );
 
-    final response = await _client.post(
-      settings.registerUrl,
-      headers: {
-        'Content-type': 'application/json',
-        ...settings.toHeaders(),
-      },
-      body: json.encode(register.toJson()),
-    );
-    if (response != null && response.statusCode >= 300) {
+    try {
+      final response = await _client.post(
+        settings.registerUrl,
+        headers: {
+          'Content-type': 'application/json',
+          ...settings.toHeaders(),
+        },
+        body: json.encode(register.toJson()),
+      );
+      if (response.statusCode >= 300) {
+        log(
+          'Unleash: Could not register this unleash instance.\n'
+          'Please make sure your configuration is correct.\n'
+          'Error:\n'
+          'HTTP status code: ${response.statusCode}\n'
+          'HTTP response message: ${response.body}',
+        );
+      }
+    } catch (e, stacktrace) {
       log(
         'Unleash: Could not register this unleash instance.\n'
         'Please make sure your configuration is correct.\n'
         'Error:\n'
-        'HTTP status code: ${response.statusCode}\n'
-        'HTTP response message: ${response.body}',
+        '$e'
+        ''
+        '$stacktrace',
       );
     }
   }
@@ -109,9 +123,12 @@ class Unleash {
         headers: settings.toHeaders(),
       );
       final stringResponse = utf8.decode(reponse.bodyBytes);
+
       await _backupRepository?.write(settings, stringResponse);
+
       _features = Features.fromJson(
           json.decode(stringResponse) as Map<String, dynamic>);
+
       _onUpdate?.call();
     } catch (_) {
       // TODO: Should there be some other form of error handling?
@@ -124,7 +141,7 @@ class Unleash {
     if (settings.pollingInterval == null) {
       return;
     }
-    _togglePollingTimer = Timer.periodic(settings.pollingInterval, (timer) {
+    _togglePollingTimer = Timer.periodic(settings.pollingInterval!, (timer) {
       _loadToggles();
     });
   }

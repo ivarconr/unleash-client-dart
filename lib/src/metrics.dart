@@ -2,16 +2,16 @@
 class Metrics {
   Metrics({this.appName, this.instanceId, this.bucket});
 
-  final String appName;
-  final String instanceId;
-  final Bucket bucket;
+  final String? appName;
+  final String? instanceId;
+  final Bucket? bucket;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['appName'] = appName;
     data['instanceId'] = instanceId;
     if (bucket != null) {
-      data['bucket'] = bucket.toJson();
+      data['bucket'] = bucket!.toJson();
     }
     return data;
   }
@@ -20,9 +20,9 @@ class Metrics {
 class Bucket {
   Bucket({this.start, this.stop, this.toggles});
 
-  final String start;
-  final String stop;
-  final Map<String, Toggle> toggles;
+  final String? start;
+  final String? stop;
+  final Map<String, Toggle>? toggles;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
@@ -30,7 +30,7 @@ class Bucket {
     data['stop'] = stop;
     if (toggles != null) {
       final t = <String, dynamic>{};
-      for (final toggle in toggles.entries) {
+      for (final toggle in toggles!.entries) {
         t[toggle.key] = toggle.value.toJson();
       }
       data['toggles'] = t;
@@ -42,8 +42,8 @@ class Bucket {
 class Toggle {
   Toggle({this.yes, this.no});
 
-  final int yes;
-  final int no;
+  final int? yes;
+  final int? no;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};

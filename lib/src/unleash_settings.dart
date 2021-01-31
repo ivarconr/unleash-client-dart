@@ -1,16 +1,13 @@
-import 'package:meta/meta.dart';
 import 'package:path/path.dart';
 
 class UnleashSettings {
   const UnleashSettings({
-    @required this.appName,
-    @required this.instanceId,
-    @required this.unleashApi,
+    required this.appName,
+    required this.instanceId,
+    required this.unleashApi,
     this.pollingInterval = const Duration(seconds: 15),
     this.metricsReportingInterval = const Duration(milliseconds: 10000),
-  })  : assert(appName != null),
-        assert(instanceId != null),
-        assert(unleashApi != null);
+  });
 
   /// Name of the application seen by unleash-server.
   ///
@@ -27,12 +24,13 @@ class UnleashSettings {
 
   /// See https://unleash.github.io/docs/client_specification#fetching-feature-toggles-polling
   /// Polling is disabled if this is null.
-  final Duration pollingInterval;
+  final Duration? pollingInterval;
 
   /// Currently unused.
   /// At which interval, in milliseconds,
-  /// will this client be expected to send metrics
-  final Duration metricsReportingInterval;
+  /// will this client be expected to send metrics.
+  /// Metric reporing is disabled if null.
+  final Duration? metricsReportingInterval;
 
   Map<String, String> toHeaders() {
     return {
@@ -42,8 +40,12 @@ class UnleashSettings {
   }
 
   /// URL to register this client
-  String get registerUrl => join(unleashApi.toString(), 'client/register');
+  Uri get registerUrl => Uri.parse(
+        join(unleashApi.toString(), 'client/register'),
+      );
 
   /// URL to send GET requests to load toggles
-  String get featureUrl => join(unleashApi.toString(), 'client/features');
+  Uri get featureUrl => Uri.parse(
+        join(unleashApi.toString(), 'client/features'),
+      );
 }
