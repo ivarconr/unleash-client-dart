@@ -1,6 +1,7 @@
 [![Pub](https://img.shields.io/pub/v/unleash.svg)](https://pub.dartlang.org/packages/unleash)
-![GitHub Workflow Status](https://github.com/ueman/unleash/workflows/dart/badge.svg?branch=master)
+![GitHub Workflow Status](https://github.com/ueman/unleash/workflows/unleash/badge.svg?branch=master)
 [![Code Coverage](https://codecov.io/gh/ueman/unleash/branch/master/graph/badge.svg)](https://codecov.io/gh/ueman/unleash)
+![GitHub Sponsors](https://img.shields.io/github/sponsors/ueman)
 
 # Unleash Client SDK for Dart and Flutter
 This is an unofficial Unleash Client SDK for Dart. It is compatible with the [Unleash-hosted.com SaaS](https://www.unleash-hosted.com/) offering and [Unleash Open-Source](https://github.com/unleash/unleash).
@@ -63,3 +64,6 @@ This client SDK supports version 3 of the API.
 
 This SDK currently does not support any strategies, metrics reporting or anything else.
 It just gets the feature toggels yet.
+
+# Sponsoring
+I'm working on my packages on my free-time, but I don't have as much time as I would. If this package or any other package I created is helping you, please consider to [sponsor](https://github.com/ueman) me. By doing so, I will prioritize your issues or your pull-requests before the others.
