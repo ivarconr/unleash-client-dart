@@ -1,3 +1,7 @@
+## [0.2.0-nullsafety.0]
+
+* migration to nullsafety
+
 ## [0.1.1]
 
 * the API is now more or less stable. I don't expect it to change much anymore.
