@@ -1,9 +1,21 @@
-[![Pub](https://img.shields.io/pub/v/unleash.svg)](https://pub.dartlang.org/packages/unleash)
-![GitHub Workflow Status](https://github.com/ueman/unleash/workflows/unleash/badge.svg?branch=master)
-[![Code Coverage](https://codecov.io/gh/ueman/unleash/branch/master/graph/badge.svg)](https://codecov.io/gh/ueman/unleash)
-![GitHub Sponsors](https://img.shields.io/github/sponsors/ueman)
+<p align="center">
+  <img src="img/unleash.png" max-height="80" alt="Unleash" />
+</p>
+
+<p align="center">
+  <a href="https://pub.dev/packages/unleash"><img src="https://img.shields.io/pub/v/unleash.svg" alt="pub.dev"></a>
+  <img src="https://github.com/ueman/unleash/workflows/unleash/badge.svg?branch=master" alt="GitHub Workflow Status">
+  <a href="https://codecov.io/gh/ueman/unleash"><img src="https://codecov.io/gh/ueman/unleash/branch/master/graph/badge.svg" alt="Code Coverage"></a>
+  <a href="https://github.com/ueman#sponsor-me"><img src="https://img.shields.io/github/sponsors/ueman" alt="Sponsoring"></a>
+  <!-- 
+  <a href="https://pub.dev/packages/unleash/score"><img src="https://badges.bar/unleash/likes" alt="likes"></a>
+  <a href="https://pub.dev/packages/unleash/score"><img src="https://badges.bar/unleash/popularity" alt="popularity"></a>
+  <a href="https://pub.dev/packages/unleash/score"><img src="https://badges.bar/unleash/pub%20points" alt="pub points"></a>
+  -->
+</p>
 
 # Unleash Client SDK for Dart and Flutter
+
 This is an unofficial Unleash Client SDK for Dart. It is compatible with the [Unleash-hosted.com SaaS](https://www.unleash-hosted.com/) offering and [Unleash Open-Source](https://github.com/unleash/unleash).
 It also works with [GitLab Feature Flags](https://docs.gitlab.com/ee/user/project/operations/feature_flags.html).
 
@@ -66,4 +78,4 @@ This SDK currently does not support any strategies, metrics reporting or anythin
 It just gets the feature toggels yet.
 
 # Sponsoring
-I'm working on my packages on my free-time, but I don't have as much time as I would. If this package or any other package I created is helping you, please consider to [sponsor](https://github.com/ueman) me. By doing so, I will prioritize your issues or your pull-requests before the others.
+I'm working on my packages on my free-time, but I don't have as much time as I would. If this package or any other package I created is helping you, please consider to [sponsor](https://github.com/ueman#sponsor-me) me. By doing so, I will prioritize your issues or your pull-requests before the others.
