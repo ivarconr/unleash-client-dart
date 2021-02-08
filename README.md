@@ -77,5 +77,9 @@ This client SDK supports version 3 of the API.
 This SDK currently does not support any strategies, metrics reporting or anything else.
 It just gets the feature toggels yet.
 
-# Sponsoring
+## Author
+
+- Jonas Uekötter [GitHub](https://github.com/ueman) [Twitter](https://twitter.com/ue_man)
+
+## Sponsoring
 I'm working on my packages on my free-time, but I don't have as much time as I would. If this package or any other package I created is helping you, please consider to [sponsor](https://github.com/ueman#sponsor-me) me. By doing so, I will prioritize your issues or your pull-requests before the others.
