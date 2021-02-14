@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="img/unleash.png" max-height="80" alt="Unleash" />
+  <img src="https://raw.githubusercontent.com/ueman/unleash/master/img/unleash.png" max-height="80" alt="Unleash" />
 </p>
 
 <p align="center">

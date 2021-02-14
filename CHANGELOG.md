@@ -1,3 +1,7 @@
+## [0.2.0]
+
+* use stable null safe dependencies
+
 ## [0.2.0-nullsafety.0]
 
 * migration to nullsafety
