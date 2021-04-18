@@ -2,14 +2,13 @@ import 'package:path/path.dart';
 import 'package:unleash/unleash.dart';
 
 class UnleashSettings {
-  const UnleashSettings({
-    required this.appName,
-    required this.instanceId,
-    required this.unleashApi,
-    this.pollingInterval = const Duration(seconds: 15),
-    this.metricsReportingInterval = const Duration(milliseconds: 10000),
-    this.strategies = const []
-  });
+  const UnleashSettings(
+      {required this.appName,
+      required this.instanceId,
+      required this.unleashApi,
+      this.pollingInterval = const Duration(seconds: 15),
+      this.metricsReportingInterval = const Duration(milliseconds: 10000),
+      this.strategies = const []});
 
   /// Name of the application seen by unleash-server.
   ///

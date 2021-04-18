@@ -33,5 +33,5 @@ Future<void> main() async {
 
   Timer.periodic(const Duration(seconds: 1), (timer) {
     print(unleash.isEnabled('flutter-test'));
-   });
+  });
 }
