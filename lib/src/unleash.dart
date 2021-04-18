@@ -5,6 +5,8 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:unleash/src/features.dart';
 import 'package:unleash/src/register.dart';
+import 'package:unleash/src/strategies.dart';
+import 'package:unleash/src/strategy.dart';
 import 'package:unleash/src/toggle_backup.dart';
 import 'package:unleash/src/unleash_settings.dart';
 
@@ -15,6 +17,7 @@ class Unleash {
 
   final UnleashSettings settings;
   final UpdateCallback? _onUpdate;
+  final List<ActivationStrategy> _activationStrategies = [DefaultStrategy()];
 
   /// Collection of all available feature toggles
   Features? _features;
@@ -50,6 +53,8 @@ class Unleash {
           ToggleBackupRepository(readBackup, writeBackup);
     }
 
+    unleash._activationStrategies.addAll(settings.strategies ?? List.empty());
+
     await unleash._register();
     await unleash._loadToggles();
     unleash._setTogglePollingTimer();
@@ -70,7 +75,33 @@ class Unleash {
       orElse: () => defaultToggle,
     );
 
-    return featureToggle?.enabled ?? defaultValue;
+    final toggle = featureToggle ?? defaultToggle;
+    final isEnabled = toggle.enabled ?? defaultValue;
+
+    if (!isEnabled) {
+      return false;
+    }
+
+    final strategies = toggle.strategies ?? List<Strategy>.empty();
+
+    if (strategies.isEmpty) {
+      return isEnabled;
+    }
+
+    for (final strategy in strategies) {
+      final foundStrategy = _activationStrategies.firstWhere(
+        (activationStrategy) => activationStrategy.name() == strategy.name,
+        orElse: () => UnknownStrategy(),
+      );
+
+      final parameters = strategy.parameters ?? <String, dynamic>{};
+
+      if (foundStrategy.isEnabled(parameters)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /// Cancels all periodic actions of this Unleash instance

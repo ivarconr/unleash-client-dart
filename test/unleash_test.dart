@@ -19,8 +19,9 @@ void main() {
       client: MockClient(happyMock),
     );
 
-    expect(unleash.isEnabled('Demo'), true);
+    expect(unleash.isEnabled('Demo'), false);
     expect(unleash.isEnabled('tasty-testy'), false);
+    expect(unleash.isEnabled('tasty-truthy'), true);
     expect(unleash.isEnabled('foo'), true);
   });
 
@@ -36,6 +37,19 @@ void main() {
     expect(unleash.isEnabled('foobar'), false);
     expect(unleash.isEnabled('foobar', defaultValue: true), true);
     expect(unleash.isEnabled('foobar', defaultValue: false), false);
+  });
+
+  test('Custom strategy', () async {
+    final unleash = await Unleash.init(
+      UnleashSettings(
+          appName: 'test_app_name',
+          instanceId: 'instance_id',
+          unleashApi: Uri.parse('http://example.org/api'),
+          strategies: [EnvironmentBased()]),
+      client: MockClient(happyMock),
+    );
+
+    expect(unleash.isEnabled('featuristic'), true);
   });
 }
 
@@ -77,4 +91,18 @@ Future<Response> happyMock(Request request) async {
     return Future.value(Response(testFeatureToggleJson, 200));
   }
   fail('This should not be reached');
+}
+
+class EnvironmentBased implements ActivationStrategy {
+  @override
+  bool isEnabled(Map<String, dynamic> parameters) {
+    final environmentsStr = parameters['environment'] as String;
+    final environments = environmentsStr.split(',');
+    return environments.contains('production');
+  }
+
+  @override
+  String name() {
+    return 'environmentBased';
+  }
 }

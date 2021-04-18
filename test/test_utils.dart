@@ -33,6 +33,18 @@ const testFeatureToggleJson = '''
          "createdAt":"2020-05-09T19:00:26.698Z"
       },
       {
+         "name":"tasty-truthy",
+         "description":"",
+         "enabled":true,
+         "strategies":[
+            {
+               "name":"default"
+            }
+         ],
+         "variants":null,
+         "createdAt":"2020-05-09T19:00:26.698Z"
+      },
+      {
          "name":"foo",
          "description":"bar",
          "enabled":true,
@@ -44,6 +56,21 @@ const testFeatureToggleJson = '''
                "name":"gradualRolloutRandom",
                "parameters":{
                   "percentage":"71"
+               }
+            }
+         ],
+         "variants":null,
+         "createdAt":"2020-05-05T21:27:48.293Z"
+      },
+      {
+         "name":"featuristic",
+         "description":"bar",
+         "enabled":true,
+         "strategies":[
+            {
+               "name":"environmentBased",
+               "parameters":{
+                  "environment":"production"
                }
             }
          ],
