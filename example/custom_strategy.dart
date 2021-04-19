@@ -12,9 +12,7 @@ class MyStrategy implements ActivationStrategy {
   }
 
   @override
-  String name() {
-    return 'mobileStrategy';
-  }
+  String get name => 'myStrategy';
 }
 
 Future<void> main() async {

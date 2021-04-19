@@ -7,9 +7,7 @@ class DefaultStrategy implements ActivationStrategy {
   }
 
   @override
-  String name() {
-    return 'default';
-  }
+  String get name => 'default';
 }
 
 class UnknownStrategy implements ActivationStrategy {
@@ -19,7 +17,5 @@ class UnknownStrategy implements ActivationStrategy {
   }
 
   @override
-  String name() {
-    return 'unknown-strategy';
-  }
+  String get name => 'unknown-strategy';
 }

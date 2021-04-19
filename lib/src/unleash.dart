@@ -90,7 +90,7 @@ class Unleash {
 
     for (final strategy in strategies) {
       final foundStrategy = _activationStrategies.firstWhere(
-        (activationStrategy) => activationStrategy.name() == strategy.name,
+        (activationStrategy) => activationStrategy.name == strategy.name,
         orElse: () => UnknownStrategy(),
       );
 

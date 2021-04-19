@@ -102,7 +102,5 @@ class EnvironmentBased implements ActivationStrategy {
   }
 
   @override
-  String name() {
-    return 'environmentBased';
-  }
+  String get name => 'environmentBased';
 }
