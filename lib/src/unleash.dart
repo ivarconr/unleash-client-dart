@@ -114,6 +114,7 @@ class Unleash {
       appName: settings.appName,
       instanceId: settings.instanceId,
       interval: settings.metricsReportingInterval?.inMilliseconds,
+      strategies: _activationStrategies.map((e) => e.name).toList(),
       started: DateTime.now(),
     );
 
