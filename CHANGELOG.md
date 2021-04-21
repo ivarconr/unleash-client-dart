@@ -1,3 +1,7 @@
+## [0.3.0]
+
+* Add support for [strategies](https://www.unleash-hosted.com/docs/control-rollout/)
+
 ## [0.2.0]
 
 * use stable null safe dependencies

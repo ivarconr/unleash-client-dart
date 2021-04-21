@@ -73,9 +73,7 @@ unleash.isEnabled("AwesomeFeature", defaultValue: true);
 
 ## Current state of development
 This client SDK supports version 3 of the API.
-
-This SDK currently does not support any strategies, metrics reporting or anything else.
-It just gets the feature toggels yet.
+This SDK currently does not support metrics reporting.
 
 ## Author
 
