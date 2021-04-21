@@ -5,9 +5,10 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: google/dart:stable
     steps:
+      - uses: dart-lang/setup-dart@v1
+          with:
+            sdk: stable
       - uses: actions/checkout@v2
       - name: Install Dependencies
         run: pub get
