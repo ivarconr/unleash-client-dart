@@ -7,8 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: dart-lang/setup-dart@v1
-          with:
-            sdk: stable
+        with:
+          sdk: stable
       - uses: actions/checkout@v2
       - name: Install Dependencies
         run: pub get
