@@ -61,11 +61,12 @@ class Strategy {
   factory Strategy.fromJson(Map json) {
     return Strategy(
       name: json['name'] as String?,
-      parameters:
-          json['parameters'] != null ? json['parameters'] as Map? : null,
+      parameters: json['parameters'] != null
+          ? json['parameters'] as Map<String, dynamic>?
+          : null,
     );
   }
 
   final String? name;
-  final Map? parameters;
+  final Map<String, dynamic>? parameters;
 }

@@ -1,13 +1,14 @@
 import 'package:path/path.dart';
+import 'package:unleash/unleash.dart';
 
 class UnleashSettings {
-  const UnleashSettings({
-    required this.appName,
-    required this.instanceId,
-    required this.unleashApi,
-    this.pollingInterval = const Duration(seconds: 15),
-    this.metricsReportingInterval = const Duration(milliseconds: 10000),
-  });
+  const UnleashSettings(
+      {required this.appName,
+      required this.instanceId,
+      required this.unleashApi,
+      this.pollingInterval = const Duration(seconds: 15),
+      this.metricsReportingInterval = const Duration(milliseconds: 10000),
+      this.strategies = const []});
 
   /// Name of the application seen by unleash-server.
   ///
@@ -21,6 +22,8 @@ class UnleashSettings {
   /// Should be for example Uri.parse('https://unleash.herokuapp.com/api')
   /// or if used with GitLab Uri.parse('https://gitlab.com/api/v4/feature_flags/unleash/42')
   final Uri unleashApi;
+
+  final List<ActivationStrategy>? strategies;
 
   /// See https://unleash.github.io/docs/client_specification#fetching-feature-toggles-polling
   /// Polling is disabled if this is null.
