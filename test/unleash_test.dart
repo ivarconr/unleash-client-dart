@@ -3,15 +3,12 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
 import 'package:test/test.dart';
+import 'package:unleash/src/strategy.dart';
 import 'package:unleash/unleash.dart';
 
 import 'test_utils.dart';
 
 void main() {
-  test('Unleash.init throws assertion error', () {
-    expect(Unleash.init(null), throwsAssertionError);
-  });
-
   test('Unleash.init happy path', () async {
     final unleash = await Unleash.init(
       UnleashSettings(
@@ -23,8 +20,9 @@ void main() {
       client: MockClient(happyMock),
     );
 
-    expect(unleash.isEnabled('Demo'), true);
+    expect(unleash.isEnabled('Demo'), false);
     expect(unleash.isEnabled('tasty-testy'), false);
+    expect(unleash.isEnabled('tasty-truthy'), true);
     expect(unleash.isEnabled('foo'), true);
   });
 
@@ -41,11 +39,24 @@ void main() {
     expect(unleash.isEnabled('foobar', defaultValue: true), true);
     expect(unleash.isEnabled('foobar', defaultValue: false), false);
   });
+
+  test('Custom strategy', () async {
+    final unleash = await Unleash.init(
+      UnleashSettings(
+          appName: 'test_app_name',
+          instanceId: 'instance_id',
+          unleashApi: Uri.parse('http://example.org/api'),
+          strategies: [EnvironmentBased()]),
+      client: MockClient(happyMock),
+    );
+
+    expect(unleash.isEnabled('featuristic'), true);
+  });
 }
 
 /// This mock handler only sends valid responses.
 /// Used to test the happy path.
-Future<Response> happyMock(Request request) {
+Future<Response> happyMock(Request request) async {
   final registerUri = Uri.parse('http://example.org/api/client/register');
   final featuresUri = Uri.parse('http://example.org/api/client/features');
 
@@ -80,5 +91,17 @@ Future<Response> happyMock(Request request) {
 
     return Future.value(Response(testFeatureToggleJson, 200));
   }
-  return null;
+  fail('This should not be reached');
+}
+
+class EnvironmentBased implements ActivationStrategy {
+  @override
+  bool isEnabled(Map<String, dynamic> parameters) {
+    final environmentsStr = parameters['environment'] as String;
+    final environments = environmentsStr.split(',');
+    return environments.contains('production');
+  }
+
+  @override
+  String get name => 'environmentBased';
 }

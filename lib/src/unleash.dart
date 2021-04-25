@@ -5,6 +5,8 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:unleash/src/features.dart';
 import 'package:unleash/src/register.dart';
+import 'package:unleash/src/strategies.dart';
+import 'package:unleash/src/strategy.dart';
 import 'package:unleash/src/toggle_backup.dart';
 import 'package:unleash/src/unleash_settings.dart';
 
@@ -15,6 +17,7 @@ class Unleash {
 
   final UnleashSettings settings;
   final UpdateCallback _onUpdate;
+  final List<ActivationStrategy> _activationStrategies = [DefaultStrategy()];
 
   /// Collection of all available feature toggles
   Features _features;
@@ -48,26 +51,55 @@ class Unleash {
           ToggleBackupRepository(readBackup, writeBackup);
     }
 
+    unleash._activationStrategies.addAll(settings.strategies ?? List.empty());
+
     await unleash._register();
     await unleash._loadToggles();
     unleash._setTogglePollingTimer();
     return unleash;
   }
 
-  bool isEnabled(String feature, {bool defaultValue = false}) {
+  bool isEnabled(String toggleName, {bool defaultValue = false}) {
     final defaultToggle = FeatureToggle(
-      name: feature,
+      name: toggleName,
       strategies: null,
       description: null,
       enabled: defaultValue,
       strategy: null,
     );
 
-    final featureToggle = _features.features.firstWhere(
-      (toggle) => toggle.name == feature,
+    final featureToggle = _features?.features?.firstWhere(
+      (toggle) => toggle.name == toggleName,
       orElse: () => defaultToggle,
     );
-    return featureToggle.enabled;
+
+    final toggle = featureToggle ?? defaultToggle;
+    final isEnabled = toggle.enabled ?? defaultValue;
+
+    if (!isEnabled) {
+      return false;
+    }
+
+    final strategies = toggle.strategies ?? List<Strategy>.empty();
+
+    if (strategies.isEmpty) {
+      return isEnabled;
+    }
+
+    for (final strategy in strategies) {
+      final foundStrategy = _activationStrategies.firstWhere(
+        (activationStrategy) => activationStrategy.name == strategy.name,
+        orElse: () => UnknownStrategy(),
+      );
+
+      final parameters = strategy.parameters ?? <String, dynamic>{};
+
+      if (foundStrategy.isEnabled(parameters)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /// Cancels all periodic actions of this Unleash instance
@@ -80,11 +112,12 @@ class Unleash {
       appName: settings.appName,
       instanceId: settings.instanceId,
       interval: settings.metricsReportingInterval.inMilliseconds,
+      strategies: _activationStrategies.map((e) => e.name).toList(),
       started: DateTime.now().toIso8601String(),
     );
 
     final response = await _client.post(
-      settings.registerUrl,
+      Uri.parse(settings.registerUrl),
       headers: {
         'Content-type': 'application/json',
         ...settings.toHeaders(),
@@ -105,7 +138,7 @@ class Unleash {
   Future<void> _loadToggles() async {
     try {
       final reponse = await _client.get(
-        settings.featureUrl,
+        Uri.parse(settings.featureUrl),
         headers: settings.toHeaders(),
       );
       final stringResponse = utf8.decode(reponse.bodyBytes);

@@ -1,14 +1,16 @@
 import 'package:meta/meta.dart';
 import 'package:path/path.dart';
+import 'package:unleash/src/strategy.dart';
 
 class UnleashSettings {
-  const UnleashSettings({
-    @required this.appName,
-    @required this.instanceId,
-    @required this.unleashApi,
-    this.pollingInterval = const Duration(seconds: 15),
-    this.metricsReportingInterval = const Duration(milliseconds: 10000),
-  })  : assert(appName != null),
+  const UnleashSettings(
+      {@required this.appName,
+      @required this.instanceId,
+      @required this.unleashApi,
+      this.pollingInterval = const Duration(seconds: 15),
+      this.metricsReportingInterval = const Duration(milliseconds: 10000),
+      this.strategies = const []})
+      : assert(appName != null),
         assert(instanceId != null),
         assert(unleashApi != null);
 
@@ -28,6 +30,8 @@ class UnleashSettings {
   /// See https://unleash.github.io/docs/client_specification#fetching-feature-toggles-polling
   /// Polling is disabled if this is null.
   final Duration pollingInterval;
+
+  final List<ActivationStrategy> strategies;
 
   /// Currently unused.
   /// At which interval, in milliseconds,
