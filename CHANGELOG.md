@@ -1,3 +1,7 @@
+## [0.1.2]
+
+* Support for Feature Toggles
+
 ## [0.1.1]
 
 * the API is now more or less stable. I don't expect it to change much anymore.

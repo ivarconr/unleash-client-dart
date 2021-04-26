@@ -1,7 +1,7 @@
 /// This library contains Unleash SDK constants used by this package.
 library version;
 
-const String version = '0.1.1';
+const String version = '0.1.2';
 
 const String name = 'unleash-client-dart';
 
