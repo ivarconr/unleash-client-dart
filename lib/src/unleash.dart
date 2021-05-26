@@ -3,21 +3,26 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
+import 'package:unleash/src/context.dart';
 import 'package:unleash/src/features.dart';
 import 'package:unleash/src/register.dart';
 import 'package:unleash/src/strategies.dart';
 import 'package:unleash/src/strategy.dart';
 import 'package:unleash/src/toggle_backup.dart';
 import 'package:unleash/src/unleash_settings.dart';
+import 'package:unleash/unleash.dart';
+
+import 'variant.dart';
 
 typedef UpdateCallback = void Function();
 
 class Unleash {
-  Unleash._internal(this.settings, this._onUpdate, this._client);
+  Unleash._internal(this.settings, this._onUpdate, this._client, this._context);
 
   final UnleashSettings settings;
   final UpdateCallback? _onUpdate;
   final List<ActivationStrategy> _activationStrategies = [DefaultStrategy()];
+  final UnleashContext _context;
 
   /// Collection of all available feature toggles
   Features? _features;
@@ -36,17 +41,17 @@ class Unleash {
   /// [settings] are used to specify the backend and various other settings.
   /// A [client] can be used for example to further configure http headers
   /// according to your needs.
-  static Future<Unleash> init(
-    UnleashSettings settings, {
-    http.Client? client,
-    ReadBackup? readBackup,
-    WriteBackup? writeBackup,
-    UpdateCallback? onUpdate,
-  }) async {
+  static Future<Unleash> init(UnleashSettings settings,
+      {http.Client? client,
+      ReadBackup? readBackup,
+      WriteBackup? writeBackup,
+      UpdateCallback? onUpdate,
+      UnleashContext? context}) async {
     final unleash = Unleash._internal(
       settings,
       onUpdate,
       client ?? http.Client(),
+      context ?? UnleashContext(),
     );
     if (writeBackup != null && readBackup != null) {
       unleash._backupRepository =
@@ -62,20 +67,7 @@ class Unleash {
   }
 
   bool isEnabled(String toggleName, {bool defaultValue = false}) {
-    final defaultToggle = FeatureToggle(
-      name: toggleName,
-      strategies: null,
-      description: null,
-      enabled: defaultValue,
-      strategy: null,
-    );
-
-    final featureToggle = _features?.features?.firstWhere(
-      (toggle) => toggle.name == toggleName,
-      orElse: () => defaultToggle,
-    );
-
-    final toggle = featureToggle ?? defaultToggle;
+    final toggle = _getToggle(toggleName, defaultValue: defaultValue);
     final isEnabled = toggle.enabled ?? defaultValue;
 
     if (!isEnabled) {
@@ -107,6 +99,35 @@ class Unleash {
   /// Cancels all periodic actions of this Unleash instance
   void dispose() {
     _togglePollingTimer?.cancel();
+  }
+
+  Variant getVariant(String toggleName,
+      {Variant defaultValue = Variant.disabledVariant}) {
+    final toggle = _getToggle(toggleName);
+    final isEnabled = toggle.enabled ?? false;
+
+    if (!isEnabled) {
+      return defaultValue;
+    }
+
+    return selectVariant(toggle, _context, defaultValue);
+  }
+
+  FeatureToggle _getToggle(String toggleName, {bool defaultValue = false}) {
+    final defaultToggle = FeatureToggle(
+      name: toggleName,
+      strategies: null,
+      description: null,
+      enabled: defaultValue,
+      strategy: null,
+    );
+
+    final featureToggle = _features?.features?.firstWhere(
+      (toggle) => toggle.name == toggleName,
+      orElse: () => defaultToggle,
+    );
+
+    return featureToggle ?? defaultToggle;
   }
 
   Future<void> _register() async {

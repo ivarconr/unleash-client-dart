@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:http/testing.dart';
@@ -51,11 +52,61 @@ void main() {
 
     expect(unleash.isEnabled('featuristic'), true);
   });
+
+  group('Unleash.getVariant', () {
+    final spec = json.decode(testVariantsJson) as Map<String, dynamic>;
+    final response = spec['state'] as Map<String, dynamic>;
+    final tests = spec['variantTests'] as List;
+
+    for (dynamic testData in tests) {
+      runVariantTest(testData, json.encode(response));
+    }
+  });
 }
+
+void runVariantTest(dynamic testData, String response) async {
+  _runVariantTest(
+      testData['description'] as String,
+      testData['context'] as Map<String, dynamic>?,
+      testData['toggleName'] as String,
+      testData['expectedResult'] as Map<String, dynamic>,
+      response);
+}
+
+void _runVariantTest(
+    String description,
+    Map<String, dynamic>? context,
+    String toggleName,
+    Map<String, dynamic> expectedResult,
+    String response) async {
+  test(description, () async {
+    final unleash = await Unleash.init(
+        UnleashSettings(
+            appName: 'test_app_name',
+            instanceId: 'instance_id',
+            unleashApi: Uri.parse('http://example.org/api')),
+        client: MockClient((req) => happyMock(req,
+            responseProvider: () async => Response(response, 200))),
+        context: UnleashContext(
+          userId: context?['userId'] as String?,
+        ));
+
+    final variant = unleash.getVariant(toggleName);
+    expect(variant.name, expectedResult['name']);
+    expect(variant.enabled, expectedResult['enabled']);
+    expect(variant.payload?.type, expectedResult['payload']?['type']);
+    expect(variant.payload?.value, expectedResult['payload']?['value']);
+  });
+}
+
+Future<Response> _defaultResponseProvider() async =>
+    Response(testFeatureToggleJson, 200);
 
 /// This mock handler only sends valid responses.
 /// Used to test the happy path.
-Future<Response> happyMock(Request request) async {
+Future<Response> happyMock(Request request,
+    {Future<Response> Function() responseProvider =
+        _defaultResponseProvider}) async {
   final registerUri = Uri.parse('http://example.org/api/client/register');
   final featuresUri = Uri.parse('http://example.org/api/client/features');
 
@@ -88,7 +139,7 @@ Future<Response> happyMock(Request request) async {
       },
     );
 
-    return Future.value(Response(testFeatureToggleJson, 200));
+    return responseProvider();
   }
   fail('This should not be reached');
 }

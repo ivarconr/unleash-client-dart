@@ -2,6 +2,7 @@
 /// toggle (also known as feature flags) service.
 library unleash;
 
+export 'src/context.dart';
 export 'src/strategy.dart';
 export 'src/toggle_backup.dart' hide ToggleBackupRepository;
 export 'src/unleash.dart';

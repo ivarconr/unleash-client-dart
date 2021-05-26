@@ -1,3 +1,5 @@
+import 'variant.dart';
+
 /// See https://unleash.github.io/docs/api/client/features
 class Features {
   Features({this.version, this.features});
@@ -28,6 +30,7 @@ class FeatureToggle {
     this.enabled,
     this.strategies,
     this.strategy,
+    this.variants
   });
 
   factory FeatureToggle.fromJson(Map json) {
@@ -39,12 +42,20 @@ class FeatureToggle {
       });
     }
 
+    var variants = <VariantDefinition>[];
+    if (json['variants'] != null) {
+      json['variants'].forEach((dynamic v) {
+        variants.add(VariantDefinition.fromJson(v as Map));
+      });
+    }
+
     return FeatureToggle(
       name: json['name'] as String?,
       description: json['description'] as String?,
       enabled: json['enabled'] as bool?,
       strategies: strategies,
       strategy: json['strategy'] as String?,
+      variants: variants,
     );
   }
 
@@ -53,6 +64,7 @@ class FeatureToggle {
   final bool? enabled;
   final List<Strategy>? strategies;
   final String? strategy;
+  final List<VariantDefinition>? variants;
 }
 
 class Strategy {
