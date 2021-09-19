@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:http/testing.dart';
 import 'package:test/test.dart';
 import 'package:unleash/unleash.dart';
 
@@ -17,7 +16,7 @@ void main() {
         pollingInterval: null,
         apiToken: '',
       ),
-      client: MockClient(happyMock),
+      client: NoOpUnleashClient(),
     );
 
     expect(unleash.isEnabled('Demo'), false);
@@ -34,7 +33,7 @@ void main() {
         unleashApi: Uri.parse('http://example.org/api'),
         apiToken: '',
       ),
-      client: MockClient(happyMock),
+      client: NoOpUnleashClient(),
     );
 
     expect(unleash.isEnabled('foobar'), false);
@@ -51,7 +50,7 @@ void main() {
         strategies: [EnvironmentBased()],
         apiToken: '',
       ),
-      client: MockClient(happyMock),
+      client: NoOpUnleashClient(),
     );
 
     expect(unleash.isEnabled('featuristic'), true);

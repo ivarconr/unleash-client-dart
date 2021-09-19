@@ -92,18 +92,32 @@ const testFeatureToggleJson = '''
 
 class MockUnleashClient implements UnleashClient {
   @override
-  Future<Features?> getFeatureToggles() {
-    throw UnimplementedError();
+  Future<Features?> getFeatureToggles() async {
+    return null;
   }
 
   @override
   Future<void> register(
-      DateTime dateTime, List<ActivationStrategy> activationStrategies) {
-    throw UnimplementedError();
+    DateTime dateTime,
+    List<ActivationStrategy> activationStrategies,
+  ) async {}
+
+  @override
+  Future<void> updateMetrics() async {}
+}
+
+class NoOpUnleashClient implements UnleashClient {
+  @override
+  Future<Features?> getFeatureToggles() async {
+    return null;
   }
 
   @override
-  Future<void> updateMetrics() {
-    throw UnimplementedError();
-  }
+  Future<void> register(
+    DateTime dateTime,
+    List<ActivationStrategy> activationStrategies,
+  ) async {}
+
+  @override
+  Future<void> updateMetrics() async {}
 }
