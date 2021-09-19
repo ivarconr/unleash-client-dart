@@ -5,11 +5,11 @@ import 'package:unleash/unleash.dart';
 Future<void> main() async {
   final unleash = await Unleash.init(
     UnleashSettings(
-      appName: 'debug',
-      instanceId: 'Q8XiLix59zo2NytFGd1b',
-      unleashApi:
-          Uri.parse('https://gitlab.com/api/v4/feature_flags/unleash/18585314'),
-    ),
+        appName: 'debug',
+        instanceId: 'Q8XiLix59zo2NytFGd1b',
+        unleashApi: Uri.parse('https://unleash.herokuapp.com/api/'),
+        apiToken:
+            '3bd74da5b341d868443134377ba5d802ea1e6fa2d2a948276ade1f092bec8d92'),
     onUpdate: () {
       print('refreshed feature toggles');
     },

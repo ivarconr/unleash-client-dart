@@ -5,9 +5,8 @@ class Features {
   factory Features.fromJson(Map<String, dynamic> json) {
     var features = <FeatureToggle>[];
     if (json['features'] != null) {
-      features = <FeatureToggle>[];
       json['features'].forEach((dynamic v) {
-        features.add(FeatureToggle.fromJson(v as Map));
+        features.add(FeatureToggle.fromJson(v as Map<String, dynamic>));
       });
     }
 
@@ -19,6 +18,14 @@ class Features {
 
   final int? version;
   final List<FeatureToggle>? features;
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      if (version != null) 'version': version,
+      if (features?.isNotEmpty ?? false)
+        'features': features?.map((e) => e.toJson()).toList(),
+    };
+  }
 }
 
 class FeatureToggle {
@@ -30,12 +37,11 @@ class FeatureToggle {
     this.strategy,
   });
 
-  factory FeatureToggle.fromJson(Map json) {
+  factory FeatureToggle.fromJson(Map<String, dynamic> json) {
     var strategies = <Strategy>[];
     if (json['strategies'] != null) {
-      strategies = <Strategy>[];
       json['strategies'].forEach((dynamic v) {
-        strategies.add(Strategy.fromJson(v as Map));
+        strategies.add(Strategy.fromJson(v as Map<String, dynamic>));
       });
     }
 
@@ -53,12 +59,23 @@ class FeatureToggle {
   final bool? enabled;
   final List<Strategy>? strategies;
   final String? strategy;
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (enabled != null) 'enabled': enabled,
+      if (strategy != null) 'strategy': strategy,
+      if (strategies?.isNotEmpty ?? false)
+        'strategies': strategies?.map((e) => e.toJson()).toList(),
+    };
+  }
 }
 
 class Strategy {
   Strategy({this.name, this.parameters});
 
-  factory Strategy.fromJson(Map json) {
+  factory Strategy.fromJson(Map<String, dynamic> json) {
     return Strategy(
       name: json['name'] as String?,
       parameters: json['parameters'] != null
@@ -69,4 +86,11 @@ class Strategy {
 
   final String? name;
   final Map<String, dynamic>? parameters;
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      if (name != null) 'name': name,
+      if (parameters?.isNotEmpty ?? true) 'parameters': parameters,
+    };
+  }
 }

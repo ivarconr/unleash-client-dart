@@ -1,35 +1,34 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:unleash/src/features.dart';
-import 'package:unleash/src/register.dart';
 import 'package:unleash/src/strategies.dart';
 import 'package:unleash/src/strategy.dart';
-import 'package:unleash/src/toggle_backup.dart';
+import 'package:unleash/src/unleash_client.dart';
 import 'package:unleash/src/unleash_settings.dart';
+import 'toggle_backup/toggle_backup.dart';
 
 typedef UpdateCallback = void Function();
 
 class Unleash {
-  Unleash._internal(this.settings, this._onUpdate, this._client);
+  Unleash._internal(this.settings, this._onUpdate, this._unleashClient)
+      : _backupRepository = ToggleBackup(settings);
 
+  final UnleashClient _unleashClient;
   final UnleashSettings settings;
   final UpdateCallback? _onUpdate;
-  final List<ActivationStrategy> _activationStrategies = [DefaultStrategy()];
+  final ToggleBackup _backupRepository;
+  final List<ActivationStrategy> _activationStrategies = [
+    DefaultStrategy(),
+    UserIdStrategy(),
+  ];
 
   /// Collection of all available feature toggles
   Features? _features;
 
-  /// The client which is used by unleash to make the requests
-  final http.Client _client;
-
   /// This timer is responsible for starting a new request
   /// every time the given [UnleashSettings.pollingInterval] expired.
   Timer? _togglePollingTimer;
-
-  ToggleBackupRepository? _backupRepository;
 
   /// Initializes an [Unleash] instance, registers it at the backend and
   /// starts to load the feature toggles.
@@ -38,20 +37,14 @@ class Unleash {
   /// according to your needs.
   static Future<Unleash> init(
     UnleashSettings settings, {
-    http.Client? client,
-    ReadBackup? readBackup,
-    WriteBackup? writeBackup,
+    UnleashClient? client,
     UpdateCallback? onUpdate,
   }) async {
     final unleash = Unleash._internal(
       settings,
       onUpdate,
-      client ?? http.Client(),
+      client ?? UnleashClient(settings: settings, client: http.Client()),
     );
-    if (writeBackup != null && readBackup != null) {
-      unleash._backupRepository =
-          ToggleBackupRepository(readBackup, writeBackup);
-    }
 
     unleash._activationStrategies.addAll(settings.strategies ?? List.empty());
 
@@ -96,7 +89,7 @@ class Unleash {
 
       final parameters = strategy.parameters ?? <String, dynamic>{};
 
-      if (foundStrategy.isEnabled(parameters)) {
+      if (foundStrategy.isEnabled(parameters, null)) {
         return true;
       }
     }
@@ -109,71 +102,29 @@ class Unleash {
     _togglePollingTimer?.cancel();
   }
 
-  Future<void> _register() async {
-    final register = Register(
-      appName: settings.appName,
-      instanceId: settings.instanceId,
-      interval: settings.metricsReportingInterval?.inMilliseconds,
-      strategies: _activationStrategies.map((e) => e.name).toList(),
-      started: DateTime.now(),
-    );
-
-    try {
-      final response = await _client.post(
-        settings.registerUrl,
-        headers: {
-          'Content-type': 'application/json',
-          ...settings.toHeaders(),
-        },
-        body: json.encode(register.toJson()),
-      );
-      if (response.statusCode >= 300) {
-        log(
-          'Unleash: Could not register this unleash instance.\n'
-          'Please make sure your configuration is correct.\n'
-          'Error:\n'
-          'HTTP status code: ${response.statusCode}\n'
-          'HTTP response message: ${response.body}',
-        );
-      }
-    } catch (e, stacktrace) {
-      log(
-        'Unleash: Could not register this unleash instance.\n'
-        'Please make sure your configuration is correct.\n'
-        'Error:\n'
-        '$e'
-        ''
-        '$stacktrace',
-      );
-    }
+  Future<void> _register() {
+    return _unleashClient.register(DateTime.now(), _activationStrategies);
   }
 
   Future<void> _loadToggles() async {
-    try {
-      final reponse = await _client.get(
-        settings.featureUrl,
-        headers: settings.toHeaders(),
-      );
-      final stringResponse = utf8.decode(reponse.bodyBytes);
+    final features = await _unleashClient.getFeatureToggles();
 
-      await _backupRepository?.write(settings, stringResponse);
-
-      _features = Features.fromJson(
-          json.decode(stringResponse) as Map<String, dynamic>);
-
+    if (features != null) {
+      await _backupRepository.save(features);
       _onUpdate?.call();
-    } catch (_) {
-      // TODO: Should there be some other form of error handling?
-      _features = await _backupRepository?.load(settings);
+      _features = features;
+    } else {
+      _features = await _backupRepository.load();
     }
   }
 
   void _setTogglePollingTimer() {
+    final pollingInterval = settings.pollingInterval;
     // disable polling if no pollingInterval is given
-    if (settings.pollingInterval == null) {
+    if (pollingInterval == null) {
       return;
     }
-    _togglePollingTimer = Timer.periodic(settings.pollingInterval!, (timer) {
+    _togglePollingTimer = Timer.periodic(pollingInterval, (timer) {
       _loadToggles();
     });
   }

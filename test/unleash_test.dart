@@ -15,6 +15,7 @@ void main() {
         instanceId: 'instance_id',
         unleashApi: Uri.parse('http://example.org/api'),
         pollingInterval: null,
+        apiToken: '',
       ),
       client: MockClient(happyMock),
     );
@@ -28,9 +29,11 @@ void main() {
   test('Unleash.isEnabled use default value', () async {
     final unleash = await Unleash.init(
       UnleashSettings(
-          appName: 'test_app_name',
-          instanceId: 'instance_id',
-          unleashApi: Uri.parse('http://example.org/api')),
+        appName: 'test_app_name',
+        instanceId: 'instance_id',
+        unleashApi: Uri.parse('http://example.org/api'),
+        apiToken: '',
+      ),
       client: MockClient(happyMock),
     );
 
@@ -42,10 +45,12 @@ void main() {
   test('Custom strategy', () async {
     final unleash = await Unleash.init(
       UnleashSettings(
-          appName: 'test_app_name',
-          instanceId: 'instance_id',
-          unleashApi: Uri.parse('http://example.org/api'),
-          strategies: [EnvironmentBased()]),
+        appName: 'test_app_name',
+        instanceId: 'instance_id',
+        unleashApi: Uri.parse('http://example.org/api'),
+        strategies: [EnvironmentBased()],
+        apiToken: '',
+      ),
       client: MockClient(happyMock),
     );
 
@@ -95,7 +100,7 @@ Future<Response> happyMock(Request request) async {
 
 class EnvironmentBased implements ActivationStrategy {
   @override
-  bool isEnabled(Map<String, dynamic> parameters) {
+  bool isEnabled(Map<String, dynamic> parameters, Context? context) {
     final environmentsStr = parameters['environment'] as String;
     final environments = environmentsStr.split(',');
     return environments.contains('production');

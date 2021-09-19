@@ -10,6 +10,16 @@ class Register {
     this.interval,
   });
 
+  factory Register.fromJson(Map<String, dynamic> json) {
+    return Register(
+      appName: json['appName'] as String,
+      instanceId: json['instanceId'] as String,
+      started: DateTime.parse(json['started'] as String),
+      interval: json['interval'] as int?,
+      strategies: json['strategies'] as List<String>? ?? [],
+    );
+  }
+
   /// Name of the application seen by unleash-server
   final String appName;
 

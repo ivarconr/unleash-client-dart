@@ -1,3 +1,12 @@
+import 'dart:convert';
+
+import 'package:unleash/src/features.dart';
+import 'package:unleash/src/strategy.dart';
+import 'package:unleash/src/unleash_client.dart';
+
+late final testFeatures = Features.fromJson(
+    jsonDecode(testFeatureToggleJson) as Map<String, dynamic>);
+
 // language=json
 const testFeatureToggleJson = '''
 {
@@ -80,3 +89,21 @@ const testFeatureToggleJson = '''
    ]
 }
 ''';
+
+class MockUnleashClient implements UnleashClient {
+  @override
+  Future<Features?> getFeatureToggles() {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> register(
+      DateTime dateTime, List<ActivationStrategy> activationStrategies) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateMetrics() {
+    throw UnimplementedError();
+  }
+}
