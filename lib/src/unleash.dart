@@ -6,6 +6,7 @@ import 'package:unleash/src/strategies.dart';
 import 'package:unleash/src/strategy.dart';
 import 'package:unleash/src/unleash_client.dart';
 import 'package:unleash/src/unleash_settings.dart';
+import 'context.dart';
 import 'toggle_backup/_web_toggle_backup.dart';
 import 'toggle_backup/toggle_backup.dart';
 
@@ -35,6 +36,10 @@ class Unleash {
   /// every time the given [UnleashSettings.pollingInterval] expired.
   Timer? _togglePollingTimer;
 
+  /// Unleash Context
+  /// https://docs.getunleash.io/user_guide/unleash_context
+  Context? context;
+
   /// Initializes an [Unleash] instance, registers it at the backend and
   /// starts to load the feature toggles.
   /// [settings] are used to specify the backend and various other settings.
@@ -53,7 +58,7 @@ class Unleash {
       toggleBackup,
     );
 
-    unleash._activationStrategies.addAll(settings.strategies ?? List.empty());
+    unleash._activationStrategies.addAll(settings.strategies ?? []);
 
     await unleash._register();
     await unleash._loadToggles();
@@ -61,7 +66,11 @@ class Unleash {
     return unleash;
   }
 
-  bool isEnabled(String toggleName, {bool defaultValue = false}) {
+  bool isEnabled(
+    String toggleName, {
+    bool defaultValue = false,
+    Context? localContext,
+  }) {
     final defaultToggle = FeatureToggle(
       name: toggleName,
       strategies: null,
@@ -82,7 +91,7 @@ class Unleash {
       return false;
     }
 
-    final strategies = toggle.strategies ?? List<Strategy>.empty();
+    final strategies = toggle.strategies ?? [];
 
     if (strategies.isEmpty) {
       return isEnabled;
@@ -96,7 +105,8 @@ class Unleash {
 
       final parameters = strategy.parameters ?? <String, dynamic>{};
 
-      if (foundStrategy.isEnabled(parameters, null)) {
+      var currentContext = localContext ?? context;
+      if (foundStrategy.isEnabled(parameters, currentContext)) {
         return true;
       }
     }

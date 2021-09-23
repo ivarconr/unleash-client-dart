@@ -2,7 +2,7 @@ import 'package:test/test.dart';
 import 'package:unleash/src/features.dart';
 
 void main() {
-  group('Features ', () {
+  group('Features', () {
     test('Features.fromJson', () {
       final features = Features.fromJson(<String, dynamic>{
         'version': 1,
