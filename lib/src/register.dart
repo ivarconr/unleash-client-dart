@@ -11,12 +11,14 @@ class Register {
   });
 
   factory Register.fromJson(Map<String, dynamic> json) {
+    final strategyList = json['strategies'] as List<dynamic>?;
+    final strategies = strategyList?.cast<String>();
     return Register(
       appName: json['appName'] as String,
       instanceId: json['instanceId'] as String,
       started: DateTime.parse(json['started'] as String),
       interval: json['interval'] as int?,
-      strategies: json['strategies'] as List<String>? ?? [],
+      strategies: strategies ?? [],
     );
   }
 

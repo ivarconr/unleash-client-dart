@@ -107,9 +107,19 @@ class MockUnleashClient implements UnleashClient {
 }
 
 class NoOpUnleashClient implements UnleashClient {
+  NoOpUnleashClient({this.features});
+
+  factory NoOpUnleashClient.fromJson(String json) {
+    final features =
+        Features.fromJson(jsonDecode(json) as Map<String, dynamic>);
+    return NoOpUnleashClient(features: features.features);
+  }
+
+  final List<FeatureToggle>? features;
+
   @override
   Future<Features?> getFeatureToggles() async {
-    return null;
+    return Features(features: features, version: 0);
   }
 
   @override

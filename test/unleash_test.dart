@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:test/test.dart';
+import 'package:unleash/src/features.dart';
 import 'package:unleash/unleash.dart';
 
 import 'test_utils.dart';
@@ -16,7 +17,7 @@ void main() {
         pollingInterval: null,
         apiToken: '',
       ),
-      client: NoOpUnleashClient(),
+      client: NoOpUnleashClient.fromJson(testFeatureToggleJson),
     );
 
     expect(unleash.isEnabled('Demo'), false);
@@ -50,7 +51,20 @@ void main() {
         strategies: [EnvironmentBased()],
         apiToken: '',
       ),
-      client: NoOpUnleashClient(),
+      client: NoOpUnleashClient(
+        features: [
+          FeatureToggle(
+            name: 'featuristic',
+            enabled: true,
+            strategies: [
+              Strategy(
+                name: 'environmentBased',
+                parameters: <String, dynamic>{'environment': 'production'},
+              )
+            ],
+          )
+        ],
+      ),
     );
 
     expect(unleash.isEnabled('featuristic'), true);

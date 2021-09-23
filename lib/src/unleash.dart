@@ -6,13 +6,18 @@ import 'package:unleash/src/strategies.dart';
 import 'package:unleash/src/strategy.dart';
 import 'package:unleash/src/unleash_client.dart';
 import 'package:unleash/src/unleash_settings.dart';
+import 'toggle_backup/_web_toggle_backup.dart';
 import 'toggle_backup/toggle_backup.dart';
 
 typedef UpdateCallback = void Function();
 
 class Unleash {
-  Unleash._internal(this.settings, this._onUpdate, this._unleashClient)
-      : _backupRepository = ToggleBackup(settings);
+  Unleash._internal(
+    this.settings,
+    this._onUpdate,
+    this._unleashClient,
+    ToggleBackup? toggleBackup,
+  ) : _backupRepository = toggleBackup ?? NoOpToggleBackup();
 
   final UnleashClient _unleashClient;
   final UnleashSettings settings;
@@ -39,11 +44,13 @@ class Unleash {
     UnleashSettings settings, {
     UnleashClient? client,
     UpdateCallback? onUpdate,
+    ToggleBackup? toggleBackup,
   }) async {
     final unleash = Unleash._internal(
       settings,
       onUpdate,
       client ?? UnleashClient(settings: settings, client: http.Client()),
+      toggleBackup,
     );
 
     unleash._activationStrategies.addAll(settings.strategies ?? List.empty());

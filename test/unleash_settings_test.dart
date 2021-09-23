@@ -13,6 +13,7 @@ void main() {
     expect(settings.toHeaders(), <String, String>{
       'UNLEASH-APPNAME': 'appname',
       'UNLEASH-INSTANCEID': 'instanceid',
+      'Authorization': '',
     });
   });
 

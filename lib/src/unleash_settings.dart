@@ -7,14 +7,10 @@ class UnleashSettings {
     required this.instanceId,
     required this.unleashApi,
     required this.apiToken,
-    this.backupFilePath,
     this.pollingInterval = const Duration(seconds: 15),
     this.metricsReportingInterval = const Duration(milliseconds: 10000),
     this.strategies = const [],
-  }) : assert(
-          backupFilePath == null || backupFilePath.length > 0,
-          'backupPath must be null or not empty',
-        );
+  });
 
   /// Name of the application seen by unleash-server.
   ///
@@ -34,11 +30,6 @@ class UnleashSettings {
 
   /// List of custom activation strategies
   final List<ActivationStrategy>? strategies;
-
-  /// The path where Unleash stores it's backup.
-  /// On web this does nothing. It's only used on dart:io platforms.
-  /// Setting [backupFilePath] to null disables the backup.
-  final String? backupFilePath;
 
   /// See https://unleash.github.io/docs/client_specification#fetching-feature-toggles-polling
   /// Polling is disabled if this is null.

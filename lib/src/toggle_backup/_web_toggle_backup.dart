@@ -1,8 +1,7 @@
 import 'package:unleash/src/features.dart';
 import 'package:unleash/src/toggle_backup/toggle_backup.dart';
-import '../unleash_settings.dart';
 
-ToggleBackup create(UnleashSettings settings) => NoOpToggleBackup();
+ToggleBackup create(String backupFilePath) => NoOpToggleBackup();
 
 class NoOpToggleBackup implements ToggleBackup {
   @override
