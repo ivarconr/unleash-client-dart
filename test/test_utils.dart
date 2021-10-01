@@ -1,3 +1,12 @@
+import 'dart:convert';
+
+import 'package:unleash/src/features.dart';
+import 'package:unleash/src/strategy.dart';
+import 'package:unleash/src/unleash_client.dart';
+
+late final testFeatures = Features.fromJson(
+    jsonDecode(testFeatureToggleJson) as Map<String, dynamic>);
+
 // language=json
 const testFeatureToggleJson = '''
 {
@@ -80,3 +89,45 @@ const testFeatureToggleJson = '''
    ]
 }
 ''';
+
+class MockUnleashClient implements UnleashClient {
+  @override
+  Future<Features?> getFeatureToggles() async {
+    return null;
+  }
+
+  @override
+  Future<void> register(
+    DateTime dateTime,
+    List<ActivationStrategy> activationStrategies,
+  ) async {}
+
+  @override
+  Future<void> updateMetrics() async {}
+}
+
+class NoOpUnleashClient implements UnleashClient {
+  NoOpUnleashClient({this.features});
+
+  factory NoOpUnleashClient.fromJson(String json) {
+    final features =
+        Features.fromJson(jsonDecode(json) as Map<String, dynamic>);
+    return NoOpUnleashClient(features: features.features);
+  }
+
+  final List<FeatureToggle>? features;
+
+  @override
+  Future<Features?> getFeatureToggles() async {
+    return Features(features: features, version: 0);
+  }
+
+  @override
+  Future<void> register(
+    DateTime dateTime,
+    List<ActivationStrategy> activationStrategies,
+  ) async {}
+
+  @override
+  Future<void> updateMetrics() async {}
+}

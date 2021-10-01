@@ -2,13 +2,15 @@ import 'package:path/path.dart';
 import 'package:unleash/unleash.dart';
 
 class UnleashSettings {
-  const UnleashSettings(
-      {required this.appName,
-      required this.instanceId,
-      required this.unleashApi,
-      this.pollingInterval = const Duration(seconds: 15),
-      this.metricsReportingInterval = const Duration(milliseconds: 10000),
-      this.strategies = const []});
+  const UnleashSettings({
+    required this.appName,
+    required this.instanceId,
+    required this.unleashApi,
+    required this.apiToken,
+    this.pollingInterval = const Duration(seconds: 15),
+    this.metricsReportingInterval = const Duration(milliseconds: 10000),
+    this.strategies = const [],
+  });
 
   /// Name of the application seen by unleash-server.
   ///
@@ -19,10 +21,14 @@ class UnleashSettings {
   /// Instance id for this application (typically hostname, podId or similar)
   final String instanceId;
 
+  /// See https://docs.getunleash.io/user_guide/api-token
+  final String apiToken;
+
   /// Should be for example Uri.parse('https://unleash.herokuapp.com/api')
   /// or if used with GitLab Uri.parse('https://gitlab.com/api/v4/feature_flags/unleash/42')
   final Uri unleashApi;
 
+  /// List of custom activation strategies
   final List<ActivationStrategy>? strategies;
 
   /// See https://unleash.github.io/docs/client_specification#fetching-feature-toggles-polling
@@ -39,6 +45,7 @@ class UnleashSettings {
     return {
       'UNLEASH-APPNAME': appName,
       'UNLEASH-INSTANCEID': instanceId,
+      'Authorization': apiToken,
     };
   }
 

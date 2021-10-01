@@ -10,3 +10,6 @@ environment:
 dependencies:
   unleash:
     path: ../../unleash
+
+dev_dependencies:
+  lints: ^1.0.0

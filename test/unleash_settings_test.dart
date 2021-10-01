@@ -7,11 +7,13 @@ void main() {
       appName: 'appname',
       instanceId: 'instanceid',
       unleashApi: Uri.parse('https://example.org/api'),
+      apiToken: '',
     );
 
     expect(settings.toHeaders(), <String, String>{
       'UNLEASH-APPNAME': 'appname',
       'UNLEASH-INSTANCEID': 'instanceid',
+      'Authorization': '',
     });
   });
 
@@ -20,6 +22,7 @@ void main() {
       unleashApi: Uri.parse('https://unleash.herokuapp.com/api'),
       instanceId: 'instance',
       appName: 'appname',
+      apiToken: '',
     );
     expect(
       settings.featureUrl,
@@ -34,6 +37,7 @@ void main() {
       unleashApi: Uri.parse('https://unleash.herokuapp.com/api/'),
       instanceId: 'instance',
       appName: 'appname',
+      apiToken: '',
     );
     expect(
       settings.featureUrl,

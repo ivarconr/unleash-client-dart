@@ -71,8 +71,13 @@ If you want it to default to `true` instead, you can pass `true` as the second a
 unleash.isEnabled("AwesomeFeature", defaultValue: true);
 ```
 
+## Built-in activation strategies
+
+- [default](https://docs.getunleash.io/user_guide/activation_strategy#standard)
+- [UserIDs](https://docs.getunleash.io/user_guide/activation_strategy#userids)
+
 ## Current state of development
-This client SDK supports version 3 of the API.
+This client SDK supports version 4 of the API.
 This SDK currently does not support metrics reporting.
 
 ## Author

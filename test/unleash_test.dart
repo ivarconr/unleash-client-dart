@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:http/testing.dart';
 import 'package:test/test.dart';
+import 'package:unleash/src/features.dart';
 import 'package:unleash/unleash.dart';
 
 import 'test_utils.dart';
@@ -15,8 +15,9 @@ void main() {
         instanceId: 'instance_id',
         unleashApi: Uri.parse('http://example.org/api'),
         pollingInterval: null,
+        apiToken: '',
       ),
-      client: MockClient(happyMock),
+      client: NoOpUnleashClient.fromJson(testFeatureToggleJson),
     );
 
     expect(unleash.isEnabled('Demo'), false);
@@ -28,10 +29,12 @@ void main() {
   test('Unleash.isEnabled use default value', () async {
     final unleash = await Unleash.init(
       UnleashSettings(
-          appName: 'test_app_name',
-          instanceId: 'instance_id',
-          unleashApi: Uri.parse('http://example.org/api')),
-      client: MockClient(happyMock),
+        appName: 'test_app_name',
+        instanceId: 'instance_id',
+        unleashApi: Uri.parse('http://example.org/api'),
+        apiToken: '',
+      ),
+      client: NoOpUnleashClient(),
     );
 
     expect(unleash.isEnabled('foobar'), false);
@@ -42,11 +45,26 @@ void main() {
   test('Custom strategy', () async {
     final unleash = await Unleash.init(
       UnleashSettings(
-          appName: 'test_app_name',
-          instanceId: 'instance_id',
-          unleashApi: Uri.parse('http://example.org/api'),
-          strategies: [EnvironmentBased()]),
-      client: MockClient(happyMock),
+        appName: 'test_app_name',
+        instanceId: 'instance_id',
+        unleashApi: Uri.parse('http://example.org/api'),
+        strategies: [EnvironmentBased()],
+        apiToken: '',
+      ),
+      client: NoOpUnleashClient(
+        features: [
+          FeatureToggle(
+            name: 'featuristic',
+            enabled: true,
+            strategies: [
+              Strategy(
+                name: 'environmentBased',
+                parameters: <String, dynamic>{'environment': 'production'},
+              )
+            ],
+          )
+        ],
+      ),
     );
 
     expect(unleash.isEnabled('featuristic'), true);
@@ -95,7 +113,7 @@ Future<Response> happyMock(Request request) async {
 
 class EnvironmentBased implements ActivationStrategy {
   @override
-  bool isEnabled(Map<String, dynamic> parameters) {
+  bool isEnabled(Map<String, dynamic> parameters, Context? context) {
     final environmentsStr = parameters['environment'] as String;
     final environments = environmentsStr.split(',');
     return environments.contains('production');
