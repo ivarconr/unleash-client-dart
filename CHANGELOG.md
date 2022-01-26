@@ -1,3 +1,7 @@
+## [0.4.0]
+
+* Add support for custom headers
+
 ## [0.3.0]
 
 * Add support for [strategies](https://www.unleash-hosted.com/docs/control-rollout/)
