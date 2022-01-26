@@ -17,15 +17,13 @@ void main() {
     });
   });
 
-
   test('UnleashSettings.toHeader with custome headers', () {
     final settings = UnleashSettings(
-      appName: 'appname',
-      instanceId: 'instanceid',
-      unleashApi: Uri.parse('https://example.org/api'),
-      apiToken: '123',
-      customHeaders: { 'X-CUSTOM': 'WORLD'}
-    );
+        appName: 'appname',
+        instanceId: 'instanceid',
+        unleashApi: Uri.parse('https://example.org/api'),
+        apiToken: '123',
+        customHeaders: {'X-CUSTOM': 'WORLD'});
 
     expect(settings.toHeaders(), <String, String>{
       'UNLEASH-APPNAME': 'appname',
