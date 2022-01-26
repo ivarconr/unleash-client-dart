@@ -7,6 +7,7 @@ class UnleashSettings {
     required this.instanceId,
     required this.unleashApi,
     required this.apiToken,
+    this.customHeaders = const {},
     this.pollingInterval = const Duration(seconds: 15),
     this.metricsReportingInterval = const Duration(milliseconds: 10000),
     this.strategies = const [],
@@ -41,11 +42,15 @@ class UnleashSettings {
   /// Metric reporing is disabled if null.
   final Duration? metricsReportingInterval;
 
+  /// Additional http headers to add for each HTTP request towards the Unleash API
+  final Map<String, String> customHeaders;
+
   Map<String, String> toHeaders() {
     return {
       'UNLEASH-APPNAME': appName,
       'UNLEASH-INSTANCEID': instanceId,
       'Authorization': apiToken,
+      ...customHeaders
     };
   }
 
