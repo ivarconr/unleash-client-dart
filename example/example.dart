@@ -9,7 +9,7 @@ Future<void> main() async {
         instanceId: 'Q8XiLix59zo2NytFGd1b',
         unleashApi: Uri.parse('https://unleash.herokuapp.com/api/'),
         apiToken:
-            '3bd74da5b341d868443134377ba5d802ea1e6fa2d2a948276ade1f092bec8d92'),
+            '*:development.ba76487db29d7ef2557977a25b477c2e6288e2d9334fd1b91f63e2a9'),
     onUpdate: () {
       print('refreshed feature toggles');
     },
