@@ -6,6 +6,7 @@ import 'package:unleash/src/strategies.dart';
 import 'package:unleash/src/strategy.dart';
 import 'package:unleash/src/unleash_client.dart';
 import 'package:unleash/src/unleash_settings.dart';
+
 import 'context.dart';
 import 'toggle_backup/_web_toggle_backup.dart';
 import 'toggle_backup/toggle_backup.dart';
@@ -120,7 +121,10 @@ class Unleash {
   }
 
   Future<void> _register() {
-    return _unleashClient.register(DateTime.now(), _activationStrategies);
+    return _unleashClient.register(
+      DateTime.now().toUtc(),
+      _activationStrategies,
+    );
   }
 
   Future<void> _loadToggles() async {
