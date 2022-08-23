@@ -121,10 +121,7 @@ class Unleash {
   }
 
   Future<void> _register() {
-    return _unleashClient.register(
-      DateTime.now().toUtc(),
-      _activationStrategies,
-    );
+    return _unleashClient.register(DateTime.now(), _activationStrategies);
   }
 
   Future<void> _loadToggles() async {

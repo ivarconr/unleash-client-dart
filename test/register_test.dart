@@ -15,7 +15,7 @@ void main() {
     );
 
     expect(register.toJson(), <String, dynamic>{
-      'started': startTime.toIso8601String(),
+      'started': startTime.toUtc().toIso8601String(),
       'sdkVersion': sdkVersion,
       'interval': 20,
       'instanceId': 'instanceid',
