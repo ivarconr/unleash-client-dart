@@ -17,6 +17,6 @@ jobs:
       - name: Analyze
         run: dart analyze --fatal-infos --fatal-warnings .
       - name: Run tests
-        run: dart test --coverage=coverage && pub run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
+        run: dart test --coverage=coverage && dart pub run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

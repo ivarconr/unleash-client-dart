@@ -49,7 +49,7 @@ class Register {
       'instanceId': instanceId,
       'sdkVersion': sdkVersion,
       'strategies': strategies,
-      'started': started.toIso8601String(),
+      'started': started.toUtc().toIso8601String(),
       if (interval != null) 'interval': interval,
     };
   }

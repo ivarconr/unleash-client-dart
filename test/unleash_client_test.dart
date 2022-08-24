@@ -31,7 +31,7 @@ void main() {
 
       expect(register.appName, 'foo');
       expect(register.instanceId, 'bar');
-      expect(register.started, DateTime(2021, 01, 01, 01, 01));
+      expect(register.started, DateTime(2021, 01, 01, 01, 01).toUtc());
 
       callbackCalled = true;
       return Response('', 200);
