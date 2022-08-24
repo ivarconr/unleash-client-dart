@@ -1,6 +1,6 @@
 name: unleash
 description: A Server Side Dart SDK for Unleash. Unleash is an open-source feature flag service.
-version: 0.4.0
+version: 0.4.1
 homepage: https://github.com/ivarconr/unleash-client-dart
 repository: https://github.com/ivarconr/unleash-client-dart
 issue_tracker: https://github.com/ivarconr/unleash-client-dart/issues
