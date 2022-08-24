@@ -1,6 +1,7 @@
 import 'package:test/test.dart';
 import 'package:unleash/src/register.dart';
 import 'package:unleash/src/version.dart';
+import 'dart:developer';
 
 void main() {
   test('Register.toJson', () {
