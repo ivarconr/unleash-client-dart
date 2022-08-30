@@ -69,6 +69,42 @@ void main() {
 
     expect(unleash.isEnabled('featuristic'), true);
   });
+
+  test('Get Variants', () async {
+    final unleash = await Unleash.init(
+      UnleashSettings(
+        appName: 'test_app_name',
+        instanceId: 'instance_id',
+        unleashApi: Uri.parse('http://example.org/api'),
+        pollingInterval: null,
+        apiToken: '',
+      ),
+      client: NoOpUnleashClient.fromJson(testFeatureToggleJson),
+    );
+
+    expect(unleash.getVariants('variantest').length, 1);
+  });
+
+  test('Get Specific Variant', () async {
+    final unleash = await Unleash.init(
+      UnleashSettings(
+        appName: 'test_app_name',
+        instanceId: 'instance_id',
+        unleashApi: Uri.parse('http://example.org/api'),
+        pollingInterval: null,
+        apiToken: '',
+      ),
+      client: NoOpUnleashClient.fromJson(testFeatureToggleJson),
+    );
+
+    final android = unleash
+        .getVariants('variantest')
+        .firstWhere((e) => e.name == 'android')
+        .payload
+        ?.value;
+
+    expect(android, '1.16.0');
+  });
 }
 
 /// This mock handler only sends valid responses.

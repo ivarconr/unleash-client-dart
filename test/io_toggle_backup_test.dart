@@ -22,7 +22,7 @@ void main() {
       final backup = await backupRepository.load();
 
       expect(backup != null, true);
-      expect(backup!.features!.length, 5);
+      expect(backup!.features!.length, 6);
       expect(backup.features![0].name, 'Demo');
     });
   });

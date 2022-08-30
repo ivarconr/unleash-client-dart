@@ -115,6 +115,29 @@ class Unleash {
     return false;
   }
 
+  List<Variant> getVariants(
+    String toggleName, {
+    List<Variant> defaultValue = const [],
+    Context? localContext,
+  }) {
+    final defaultToggle = FeatureToggle(
+      name: toggleName,
+      strategies: null,
+      description: null,
+      strategy: null,
+    );
+
+    final featureToggle = _features?.features?.firstWhere(
+      (toggle) => toggle.name == toggleName,
+      orElse: () => defaultToggle,
+    );
+
+    final toggle = featureToggle ?? defaultToggle;
+    final variants = toggle.variants ?? defaultValue;
+
+    return variants;
+  }
+
   /// Cancels all periodic actions of this Unleash instance
   void dispose() {
     _togglePollingTimer?.cancel();

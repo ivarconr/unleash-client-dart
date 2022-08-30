@@ -85,6 +85,33 @@ const testFeatureToggleJson = '''
          ],
          "variants":null,
          "createdAt":"2020-05-05T21:27:48.293Z"
+      },
+      {
+         "name":"variantest",
+         "description":"bar",
+         "enabled":true,
+         "strategies":[
+            {
+               "name":"environmentBased",
+               "parameters":{
+                  "environment":"production"
+               }
+            }
+         ],
+         "variants": [
+            {
+                "name": "android",
+                "weight": 1000,
+                "weightType": "variable",
+                "stickiness": "default",
+                "payload": {
+                    "type": "string",
+                    "value": "1.16.0"
+                },
+                "overrides": []
+            }
+        ],
+         "createdAt":"2020-05-05T21:27:48.293Z"
       }
    ]
 }
