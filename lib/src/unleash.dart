@@ -118,7 +118,6 @@ class Unleash {
   List<Variant> getVariants(
     String toggleName, {
     List<Variant> defaultValue = const [],
-    Context? localContext,
   }) {
     final defaultToggle = FeatureToggle(
       name: toggleName,
