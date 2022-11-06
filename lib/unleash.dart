@@ -3,6 +3,7 @@
 library unleash;
 
 export 'src/strategy.dart';
+export 'src/features.dart';
 export 'src/unleash.dart';
 export 'src/context.dart';
 export 'src/unleash_settings.dart';

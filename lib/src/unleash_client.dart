@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart';
-import 'package:unleash/src/features.dart';
 import 'package:unleash/src/register.dart';
 import 'package:unleash/unleash.dart';
 
@@ -26,8 +25,25 @@ class UnleashClient {
       );
       final stringResponse = utf8.decode(reponse.bodyBytes);
 
-      return Features.fromJson(
+      final response = Features.fromJson(
           json.decode(stringResponse) as Map<String, dynamic>);
+
+      List<FeatureToggle>? features = response.features;
+
+      _settings.fakeToggles?.forEach((e) {
+        final index = features?.indexWhere((f) => f.name == e.name) ?? -1;
+
+        if (index == -1) {
+          features?.add(e);
+        } else {
+          features?[index] = e;
+        }
+      });
+
+      return Features(
+        version: response.version,
+        features: features,
+      );
     } catch (e, stackTrace) {
       log(
         'Could not load feature toggles from Unleash server.\n'

@@ -10,6 +10,7 @@ class UnleashSettings {
     this.customHeaders = const {},
     this.pollingInterval = const Duration(seconds: 15),
     this.metricsReportingInterval = const Duration(milliseconds: 10000),
+    this.fakeToggles = const [],
     this.strategies = const [],
   });
 
@@ -41,6 +42,9 @@ class UnleashSettings {
   /// will this client be expected to send metrics.
   /// Metric reporing is disabled if null.
   final Duration? metricsReportingInterval;
+
+  /// List of fake features
+  final List<FeatureToggle>? fakeToggles;
 
   /// Additional http headers to add for each HTTP request towards the Unleash API
   final Map<String, String> customHeaders;
